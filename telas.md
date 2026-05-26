@@ -7,7 +7,7 @@
 |=========================|==========================|=========================|
 |                         |                          |                         |
 |                         |                          |                         |
-|                         |                          |                         |c
+|                         |                          |                         |
 |                         |                          |                         |
 |                         |                          |                         |
 |                         |                          |                         |
@@ -19,11 +19,11 @@
 |                                    Menu:                                     |
 |==============================================================================|
 |                                                                              |
-|    1. Cadastro Operador / Módulo.         3. Consultar Registros.            |
+|    1. Cadastro de Operadores.              4. Consultar Registros.           |
 |                                                                              |
-|    2. Atualizar Opções do Sistema.        4. Ver Relatórios Operacionais.    |
+|    2. Cadastro de Equipamentos.            5. Ver Relatórios Operacionais.   |
 |                                                                              |
-|    5. Ajuda e Suporte ao Usuário.         6. Sair do Programa.               |
+|    3. Atualizar Dados do Sistema.          6. Sair do Programa.              |
 +------------------------------------------------------------------------------+
 >
 ```
@@ -32,13 +32,8 @@
 =========================================================================
 
 
-- 1
-```
-O que deseja fazer? (1. Cadastrar Operador | 2. Cadastrar Módulo)
-> 
-```
 
-- 1.1
+- 1
 ```
 (system cls)
 
@@ -50,7 +45,12 @@ Cadastro de Operador:
 > Nível Operacional (BASICO, INTERMEDIARIO, SUPERVISOR):
 ```
 
-- Cadastro de Módulo 1.2
+
+=========================================================================
+
+
+
+- 2
 ```
 Cadastro de Módulo:
 (system cls)
@@ -66,7 +66,7 @@ Cadastro de Módulo:
 =========================================================================
 
 
-- 2
+- 3
 ```
 (system cls)
 
@@ -78,7 +78,7 @@ Menu:
 - 5. Desativar Registros.
 ```
 
-- 2.1
+- 3.1
 ```
 (cls)
 Módulos Registrados:
@@ -93,7 +93,7 @@ Para qual estado você deseja atualizar o módulo <ID>? (ATIVO, INATIVO, MANUTEN
 >
 ```
 
-- 2.2
+- 3.2
 ```
 (cls)
 Operadores Registrados:
@@ -108,7 +108,7 @@ Para qual estado você deseja atualizar o operador <ID>? (ATIVO, OCUPADO, INATIV
 >
 ```
 
-- 2.3
+- 3.3
 ```
 (cls)
 Módulos Registrados:
@@ -123,7 +123,7 @@ Para qual setor você deseja atualizar o módulo <ID>? (<setores>)
 >
 ```
 
-- 2.4
+- .4
 ```
 // perguntar para a lucia
 ```
@@ -183,3 +183,12 @@ Estado de Dispoonibilidade: ATIVO
 Setor: <setor>
 Estado de Dispoonibilidade: ATIVO
 ```
+
+
+
+perguntas:
+1- quais setores existem dentro da orbytec?
+2- quais tipos nos (time) vamos definir?
+3- o que determina um operador como alguem que pode operar uma das maquinas / modulos?
+4- Avaliar e decidir se um
+operador pode controlar simultaneamente vários equipamento
