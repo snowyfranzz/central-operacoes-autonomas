@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <locale.h>
+#include <string.h>
 #include <ctype.h>
 
 // ========== FUNCOES ==========
@@ -18,7 +18,6 @@ int isLetter(char c) {
     if (toupper(c) >= 0x41 && toupper(c) <= 0x5A) {
         return 1;
     }
-
     return 0;
 }
 
@@ -55,13 +54,14 @@ int verificar(char s[], int size) {
 // ========== STRUCTS ==========
 
 
-
 // ========== MAIN ==========
 
 
 int main() {
     char gok[5];
     int i, L = 0, N = 0;
+
+    
 
     readString(gok, sizeof(gok));
 
