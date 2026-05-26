@@ -45,7 +45,6 @@ int isLetter(char c) {
     if (toupper(c) >= 0x41 && toupper(c) <= 0x5A) {
         return 1;
     }
-
     return 0;
 }
 
@@ -98,7 +97,7 @@ int main() {
         if (verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID))) {
             strcpy(equipamento.ID, equipamentoTemp.ID);
         } else {
-            printf("\nID Inválido\n\n");
+            printf("\nID Invï¿½lido\n\n");
             system("pause");
         }
     } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID)));
@@ -110,7 +109,7 @@ int main() {
         system("cls");
         printf("Escolha o tipo de equipamento: \n\n\t");
         printf("1: AGV\n\t");
-        printf("2: Braço-Articulado\n\t");
+        printf("2: Braï¿½o-Articulado\n\t");
         printf("3: Esteira\n\t");
         printf("4: sorter\n\t");
         printf("5: transelevador\n\n> ");
@@ -147,7 +146,7 @@ int main() {
         if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado))) {
             strcpy(equipamento.setorAssociado, equipamentoTemp.setorAssociado);
         } else {
-            printf("\nID Inválido\n\n");
+            printf("\nID Invï¿½lido\n\n");
             system("pause");
         }
     } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado)));
@@ -156,10 +155,10 @@ int main() {
         input = 0;
 
         system("cls");
-        printf("Qual é o Estado Operacional atual do equipamento? \n\n\t");
+        printf("Qual ï¿½ o Estado Operacional atual do equipamento? \n\n\t");
         printf("1: Ativo\n\t");
         printf("2: Inativo\n\t");
-        printf("3: Manutenção\n\n> ");
+        printf("3: Manutenï¿½ï¿½o\n\n> ");
         readInt(&input);
 
         switch(input) {
@@ -187,7 +186,7 @@ int main() {
         if (verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo))) {
             strcpy(equipamento.IDo, equipamentoTemp.IDo);
         } else {
-            printf("\nID Inválido\n\n");
+            printf("\nID Invï¿½lido\n\n");
             system("pause");
         }
     } while (!verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo)));
@@ -196,9 +195,9 @@ int main() {
         input = 0;
 
         system("cls");
-        printf("Qual é a Importáncia (Nível de Prioridade) do equipamento? \n\n\t");
+        printf("Qual ï¿½ a Importï¿½ncia (Nï¿½vel de Prioridade) do equipamento? \n\n\t");
         printf("1: Baixa\n\t");
-        printf("2: Média\n\t");
+        printf("2: Mï¿½dia\n\t");
         printf("3: Alta\n\n> ");
         readInt(&input);
 
