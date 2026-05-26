@@ -4,7 +4,34 @@
 #include <string.h>
 #include <ctype.h>
 
+// ========== STRUCTS ==========
+
+typedef struct {
+    char ID[4];
+    char tipo[17]; //AGV, braco-articulado, esteira, sorter, transelevador
+    char setorAssociado[5];
+    char estado[11];
+    char IDo[5];
+    char prioridade[6];
+} Equipamento;
+
 // ========== FUNCOES ==========
+
+void limpaBuffer() {
+    int c;
+    while (c = getchar() != '\n' && c != EOF);
+}
+
+void readString(char s[], int size) {
+    fgets(s, size, stdin);
+    limpaBuffer();
+    s[strcspn(s,"\n")] = '\0';
+}
+
+void readInt(int *num) {
+    scanf("%d", num);
+    limpaBuffer();
+}
 
 int isNumber(char c) {
     if (c >= 0x30 && c <= 0x39) {
@@ -21,17 +48,20 @@ int isLetter(char c) {
     return 0;
 }
 
-void readString(char s[], int size) {
-    printf("Escreva ate %d caracteres: ", size - 1);
-    fgets(s, size, stdin);
-    s[strcspn(s,"\n")] = '\0';
-}
-
 int verificar(char s[], int size) {
-    int i = 0, success = 0;
+    int i, success = 0, numOnly = 1;
 
-    while (s[i] != '\0') {
-        if (i <= 1) {
+    for (i = 0; i < strlen(s); i++) {
+        if (isLetter(s[i])) {
+            numOnly = 0;
+            break;
+        }
+    }
+
+    size--;
+
+    for (i = 0; i < strlen(s); i++) {
+        if (i <= (size / 2) - 1 && !numOnly) {
             if (isLetter(s[i])) {
                 success++;
             }
@@ -40,10 +70,9 @@ int verificar(char s[], int size) {
                 success++;
             }
         }
-        i++;
     }
 
-    if (success == size - 1) {
+    if (success == size) {
         return 1;
     }
 
@@ -51,42 +80,146 @@ int verificar(char s[], int size) {
 }
 
 
-// ========== STRUCTS ==========
-
-
 // ========== MAIN ==========
 
 
 int main() {
-    char gok[5];
-    int i, L = 0, N = 0;
+    Equipamento equipamento, equipamentoTemp;
+    int input;
 
-    
+    setlocale(LC_ALL, "portuguese");
 
-    readString(gok, sizeof(gok));
+    do {
+        system("cls");
+        printf("Escreva o ID do equipamento: ");
+        readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
-    while (gok[i] != '\0') {
-        if (isLetter(gok[i])) {
-            L++;
+        if (verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID))) {
+            strcpy(equipamento.ID, equipamentoTemp.ID);
+        } else {
+            printf("\nID Inv�lido\n\n");
+            system("pause");
         }
-        if (isNumber(gok[i])) {
-            N++;
+    } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID)));
+
+
+    do {
+        input = 0;
+
+        system("cls");
+        printf("Escolha o tipo de equipamento: \n\n\t");
+        printf("1: AGV\n\t");
+        printf("2: Bra�o-Articulado\n\t");
+        printf("3: Esteira\n\t");
+        printf("4: sorter\n\t");
+        printf("5: transelevador\n\n> ");
+        readInt(&input);
+
+        switch(input) {
+            case 1:
+                strcpy(equipamento.tipo, "AGV");
+                break;
+            case 2:
+                strcpy(equipamento.tipo, "BRACO-ARTICULADO");
+                break;
+            case 3:
+                strcpy(equipamento.tipo, "ESTEIRA");
+                break;
+            case 4:
+                strcpy(equipamento.tipo, "SORTER");
+                break;
+            case 5:
+                strcpy(equipamento.tipo, "TRANSELEVADOR");
+                break;
+            default:
+                printf("\nINPUT INVALIDO\n\n");
+                system("pause");
+
         }
+    } while (input < 1 || input > 5);
 
-        i++;
-    }
+    do {
+        system("cls");
+        printf("Escreva o Setor Associado ao equipamento: ");
+        readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
 
-    printf("\n%d numbers\n%d letters", N, L);
+        if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado))) {
+            strcpy(equipamento.setorAssociado, equipamentoTemp.setorAssociado);
+        } else {
+            printf("\nID Inv�lido\n\n");
+            system("pause");
+        }
+    } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado)));
 
-    if (verificar(gok, sizeof(gok))) {
-        printf("\n\nID Compativel");
-    } else {
-        printf("\n\nID Incompativel");
-    }
+    do {
+        input = 0;
 
-    return 0;
-}
+        system("cls");
+        printf("Qual � o Estado Operacional atual do equipamento? \n\n\t");
+        printf("1: Ativo\n\t");
+        printf("2: Inativo\n\t");
+        printf("3: Manuten��o\n\n> ");
+        readInt(&input);
 
-int main(){
+        switch(input) {
+            case 1:
+                strcpy(equipamento.estado, "ATIVO");
+                break;
+            case 2:
+                strcpy(equipamento.estado, "INATIVO");
+                break;
+            case 3:
+                strcpy(equipamento.estado, "MANUTENCAO");
+                break;
+            default:
+                printf("\nINPUT INVALIDO\n\n");
+                system("pause");
+
+        }
+    } while (input < 1 || input > 3);
+
+    do {
+        system("cls");
+        printf("Escreva o ID do Operador do equipamento: ");
+        readString(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo));
+
+        if (verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo))) {
+            strcpy(equipamento.IDo, equipamentoTemp.IDo);
+        } else {
+            printf("\nID Inv�lido\n\n");
+            system("pause");
+        }
+    } while (!verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo)));
+
+    do {
+        input = 0;
+
+        system("cls");
+        printf("Qual � a Import�ncia (N�vel de Prioridade) do equipamento? \n\n\t");
+        printf("1: Baixa\n\t");
+        printf("2: M�dia\n\t");
+        printf("3: Alta\n\n> ");
+        readInt(&input);
+
+        switch(input) {
+            case 1:
+                strcpy(equipamento.prioridade, "BAIXA");
+                break;
+            case 2:
+                strcpy(equipamento.prioridade, "MEDIA");
+                break;
+            case 3:
+                strcpy(equipamento.prioridade, "ALTA");
+                break;
+            default:
+                printf("\nINPUT INVALIDO\n\n");
+                system("pause");
+
+        }
+    } while (input < 1 || input > 3);
+
+    system("cls");
+    printf("Registro:\n\n\tID: %s\n\tTipo: %s\n\tSetor Associado: %s\n\tEstado Operacional: %s\n\tID do Operador: %s\n\tPrioridade: %s\n", equipamento.ID, equipamento.tipo, equipamento.setorAssociado, equipamento.estado, equipamento.IDo, equipamento.prioridade);
+
     return 0;
 }
