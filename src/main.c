@@ -15,6 +15,15 @@ typedef struct {
     char prioridade[6];
 } Equipamento;
 
+typedef struct {
+    char ID[5];
+    char nome[71];
+    char setor[5];
+    char nivelOperacional[19];
+    char status[10];
+    int opRealizadas;
+} Operador;
+
 // ========== FUNCOES ==========
 
 void limpaBuffer() {
@@ -35,6 +44,15 @@ void readInt(int *num) {
     limpaBuffer();
 }
 
+void printEquipamento(Equipamento equipamento) {
+    printf("\nID: %s", equipamento.ID);
+    printf("\nTipo: %s", equipamento.tipo);
+    printf("\nSetor Associado: %s", equipamento.setorAssociado);
+    printf("\nEstado Operacional: %s", equipamento.estado);
+    printf("\nID do Operador: %s", equipamento.IDo);
+    printf("\nPrioridade: %s", equipamento.prioridade);
+}
+
 //verifica se o caracter eh um numero
 int isNumber(char c) {
     if (c >= 0x30 && c <= 0x39) {
@@ -53,16 +71,8 @@ int isLetter(char c) {
 }
 
 //verifica o input (se o input foi valido), funciona para strings numericos, strings de 1 letra e 2 digitos, e strings de 2 letras e 2 digitos
-int verificar(char s[], int size) {
-    int i, success = 0, numOnly = 1;
-
-    //verifica se eh um string numerico
-    for (i = 0; i < strlen(s); i++) {
-        if (isLetter(s[i])) {
-            numOnly = 0;
-            break;
-        }
-    }
+int verificar(char s[], int size, int numOnly) {
+    int i, success = 0;
 
     size--; //tira o '\0' do tamanho total
 
@@ -88,15 +98,9 @@ int verificar(char s[], int size) {
     return 0;
 }
 
-
-// ========== MAIN ==========
-
-
-int main() {
+Equipamento registrarEquipamento() {
     Equipamento equipamento, equipamentoTemp;
     int input;
-
-    setlocale(LC_ALL, "portuguese");
 
     //pega  guarda o ID do usuario
     do {
@@ -106,13 +110,13 @@ int main() {
         readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
         //verifica se for valido
-        if (verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID))) {
+        if (verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0)) {
             strcpy(equipamento.ID, equipamentoTemp.ID);
         } else {
             printf("\nID Inválido\n\n");
             system("pause");
         }
-    } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID)));
+    } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0));
 
     //pega e guarda o tipo de equipamento
     do {
@@ -160,13 +164,13 @@ int main() {
         readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
 
         //verifica se eh valido
-        if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado))) {
+        if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0)) {
             strcpy(equipamento.setorAssociado, equipamentoTemp.setorAssociado);
         } else {
-            printf("\nID Inválido\n\n");
+            printf("\nSetor Inválido\n\n");
             system("pause");
         }
-    } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado)));
+    } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
 
     //pega e guarda o estado
     do {
@@ -206,13 +210,13 @@ int main() {
         readString(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo));
 
         //verifica se eh valido
-        if (verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo))) {
+        if (verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo), 1)) {
             strcpy(equipamento.IDo, equipamentoTemp.IDo);
         } else {
             printf("\nID Inválido\n\n");
             system("pause");
         }
-    } while (!verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo)));
+    } while (!verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo), 1));
 
     //pega e guarda a prioridade
     do {
@@ -244,9 +248,148 @@ int main() {
         }
     } while (input < 1 || input > 3);
 
+    return equipamento;
+}
+
+
+// ========== MAIN ==========
+
+
+int main() {
+    Operador operadores[50];
+    Equipamento equipamentos[150], equipamentoTemp;
+    int Nequipamentos, input, i;
+
+    setlocale(LC_ALL, "portuguese");
+    i = 0;
+
+    do {
+        system("cls");
+        input = 0;
+        printf("Escolha:\n\n1: registrar equipamento\n2: voltar\n\n> ");
+        readInt(&input);
+        switch(input) {
+            case 1:
+                equipamentos[i] = registrarEquipamento();
+                Nequipamentos = i + 1;
+                i++;
+                break;
+            case 2:
+                break;
+            default:
+                printf("\nINVALIDO\n\n");
+                system("pause");
+        }
+    } while (input != 2);
+
     //imprime o resultado final
     system("cls");
-    printf("Registro:\n\n\tID: %s\n\tTipo: %s\n\tSetor Associado: %s\n\tEstado Operacional: %s\n\tID do Operador: %s\n\tPrioridade: %s\n", equipamento.ID, equipamento.tipo, equipamento.setorAssociado, equipamento.estado, equipamento.IDo, equipamento.prioridade);
+
+    for (i = 0; i < Nequipamentos; i++) {
+        printEquipamento(equipamentos[i]);
+        printf("\n");
+    }
+
+    do {
+        system("cls");
+        input = 0;
+        printf("Escolha o que atualizar:\n\n1: Estado Operacional do Equipamento\n2: Disponibilidade dos Operadores\n3: Setor do Equipamento\n4: Registrar Ocorrencias\n5: Desativar Registros\n6: Voltar\n\n> ");
+        readInt(&input);
+        switch(input) {
+            case 1:
+                do {
+                    //le numero inteiro
+                    input = 0;
+
+                    system("cls");
+                    printf("Qual é o Novo Estado Operacional do equipamento? \n\n\t");
+                    printf("1: Ativo\n\t");
+                    printf("2: Inativo\n\t");
+                    printf("3: Manutenção\n\n> ");
+                    readInt(&input);
+
+                    //verifica o numero
+                    switch(input) {
+                        case 1:
+                            strcpy(equipamentos[0].estado, "ATIVO");
+                            break;
+                        case 2:
+                            strcpy(equipamentos[0].estado, "INATIVO");
+                            break;
+                        case 3:
+                            strcpy(equipamentos[0].estado, "MANUTENCAO");
+                            break;
+                        default:
+                            printf("\nINPUT INVALIDO\n\n");
+                            system("pause");
+
+                    }
+                } while (input < 1 || input > 3);
+                break;
+            case 2:
+                do {
+                    //le numero inteiro
+                    input = 0;
+
+                    system("cls");
+                    printf("Qual é o novo status do operador? \n\n\t");
+                    printf("1: Ativo\n\t");
+                    printf("2: Ocupado\n\t");
+                    printf("3: Inativo\n\n> ");
+                    printf("4: Bloqueado\n\n> ");
+                    readInt(&input);
+
+                    //verifica o numero
+                    switch(input) {
+                        case 1:
+                            strcpy(operadores[0].status, "ATIVO");
+                            break;
+                        case 2:
+                            strcpy(operadores[0].status, "Ocupado");
+                            break;
+                        case 3:
+                            strcpy(operadores[0].status, "Inativo");
+                            break;
+                        case 4:
+                            strcpy(operadores[0].status, "Bloqueado");
+                            break;
+                        default:
+                            printf("\nINPUT INVALIDO\n\n");
+                            system("pause");
+
+                    }
+                } while (input < 1 || input > 3);
+                break;
+            case 3:
+                //pega e guarda o setor
+                do {
+                    //le string
+                    system("cls");
+                    printf("Escreva o novo Setor Associado ao equipamento: ");
+                    readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
+
+                    //verifica se eh valido
+                    if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0)) {
+                        strcpy(equipamentos[0].setorAssociado, equipamentoTemp.setorAssociado);
+                    } else {
+                        printf("\nSetor Inválido\n\n");
+                        system("pause");
+                    }
+                } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            default:
+                printf("\nINVALIDO\n\n");
+                system("pause");
+        }
+    } while (input != 6);
+
+    printEquipamento(equipamentos[0]);
 
     return 0;
 }
