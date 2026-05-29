@@ -6,20 +6,39 @@
 
 // ========== STRUCTS ==========
 
-typedef struct {
+typedef struct equipamentos {
     char ID[4];
     char tipo[17]; //AGV, braco-articulado, esteira, sorter, transelevador
     char setorAssociado[5];
     char estado[11];
     char IDo[5];
     char prioridade[6];
-} Equipamento;
+} Equipamentos;
+
+typedef struct operadores {
+    char ID[5];
+    char nome[71];
+    char setorAssociado[5]; 
+    char nivelOp[14]; // BASICO, INTERMEDIARIO, SUPERVISOR
+    char estado[10]; // ATIVO, OCUPADO, INATIVO, BLOQUEADO
+    int quantOp;
+} Operadores;
 
 // ========== FUNCOES ==========
 
 void limpaBuffer() {
     int c;
     while (c = getchar() != '\n' && c != EOF);
+}
+
+int scanfInput() {
+    int input;
+
+    printf("> ");
+    scanf("%i", &input);
+    limpaBuffer();
+
+    return input;
 }
 
 //leia o input do usuario
@@ -87,6 +106,35 @@ int verificar(char s[], int size, int numOnly) {
 
     //se nao, a funcao eh falsa
     return 0;
+}
+// DASHBOARD PRINCIPAL
+void printDashboard() {
+    system("cls");
+    printf("+------------------------------------------------------------------------------+\n");
+    printf("|               Orbytec Sistemas Integrados - Setor VX27 - Dashboard           |\n");
+    printf("+-------------------------+--------------------------+-------------------------+\n");
+    printf("|  Ocorrências Recentes:  |    Operadores Ativos:    |   Equipamentos Ativos:  |\n");
+    printf("|=========================|==========================|=========================|\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("|                         |                          |                         |\n");
+    printf("+-------------------------+--------------------------+-------------------------+\n");
+    printf("|                                    Menu:                                     |\n");
+    printf("|==============================================================================|\n");
+    printf("|                                                                              |\n");
+    printf("|    1. Cadastro de Operadores.              4. Consultar Registros.           |\n");
+    printf("|                                                                              |\n");
+    printf("|    2. Cadastro de Equipamentos.            5. Ver Relatórios Operacionais.   |\n");
+    printf("|                                                                              |\n");
+    printf("|    3. Atualizar Dados do Sistema.          6. Sair do Programa.              |\n");
+    printf("+------------------------------------------------------------------------------+\n");
 }
 
 Equipamento registrarEquipamento() {
@@ -243,42 +291,139 @@ Equipamento registrarEquipamento() {
 }
 
 
+// CADASTRO DE OPERADOR
+Operadores cadastroOp(){
+    Operadores op;
+    int localInput = 0;
+    int len = 0;
+
+    system("cls");
+
+    printf("Cadastro de Operador:\n\n");
+    do {
+        printf("> ID do Operador (4 Dígitos, outros serão desconsiderados):  ");
+        readString(op.ID, sizeof(op.ID));
+
+        if (!verificar(op.ID, sizeof(op.ID), 1)) {
+            printf("\nID Inválido!\n\n");
+            system("pause");
+        } 
+    } while (!verificar(op.ID, sizeof(op.ID), 1));
+    
+    printf("> Nome do Operador (Máximo de 70 Caractéres): ");
+    readString(op.nome, sizeof(op.nome));
+    
+    do {
+        printf("> Setor (2 Letras, 2 Dígitos - outros serão desconsiderados): ");
+        readString(op.setorAssociado, sizeof(op.setorAssociado));
+
+        if (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0)) {
+            printf("\nSetor Inválido!\n\n");
+            system("pause");
+        } 
+    } while (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0));
+
+    do {
+        printf("> Nível Operacional (1. BASICO, 2. INTERMEDIARIO, 3. SUPERVISOR): ");
+        if (scanf("%i", &localInput) != 1) {
+            localInput = 0;
+        }
+        limpaBuffer();
+        
+        switch (localInput){
+            case 1:
+                strcpy(op.nivelOp, "BASICO");
+                break;
+            case 2:
+                strcpy(op.nivelOp, "INTERMEDIARIO");
+                break;
+            case 3:
+                strcpy(op.nivelOp, "SUPERVISOR");
+                break;
+            default:
+                printf("ERRO. Você inseriu o número do nível que você quer? Tente novamente.\n");
+        }
+
+    }while(localInput != 1 && localInput != 2 && localInput != 3);
+
+    
+    do {
+        printf("> Estado Operacional Atual (1. ATIVO, 2. OCUPADO, 3. INATIVO, 4. BLOQUEADO): ");
+        if (scanf("%i", &localInput) != 1) {
+            localInput = 0;
+        }
+        limpaBuffer();
+        
+        switch (localInput){
+            case 1:
+                strcpy(op.estado, "ATIVO");
+                break;
+            case 2:
+                strcpy(op.estado, "OCUPADO");
+                break;
+            case 3:
+                strcpy(op.estado, "INATIVO");
+                break;
+            case 4:
+                strcpy(op.estado, "BLOQUEADO");
+                break;
+            default:
+                printf("ERRO. Você inseriu o número do estado que você quer? Tente novamente.\n");
+        }
+    }while(localInput != 1 && localInput != 2 && localInput != 3 && localInput != 4);
+
+    printf("\n\nOperador cadastrado com sucesso!\n");
+    system("pause");
+
+    return op;
+}
+
+
 // ========== MAIN ==========
 
 
 int main() {
-    Equipamento equipamentos[150];
-    int Nequipamentos, input, i;
+    Equipamentos equipamentos[150], equipamentoTemp;
+
+    int input;
+    int shutdown = 0;
 
     setlocale(LC_ALL, "portuguese");
-    i = 0;
 
-    do {
-        system("cls");
-        input = 0;
-        printf("Escolha:\n\n1: registrar equipamento\n2: voltar\n\n> ");
-        readInt(&input);
-        switch(input) {
+    while(!shutdown){
+        printDashboard();
+        input = scanfInput();
+
+        switch(input){
             case 1:
-                equipamentos[i] = registrarEquipamento();
-                Nequipamentos = i + 1;
-                i++;
+                cadastroOp();
                 break;
+
             case 2:
+                registrarEquipamento();
                 break;
+
+            case 3:
+                //atualizarDados();
+                break;
+
+            case 4:
+                //consultarRegistros();
+                break;
+
+            case 5:
+                //relatoriosOp();
+                break;
+
+            case 6:
+                shutdown = 1;
+                break;
+
             default:
-                printf("\nINVALIDO\n\n");
+                printf("Comando inválido!");
                 system("pause");
-        }
-    } while (input != 2);
-
-    //imprime o resultado final
-    system("cls");
-
-    for (i = 0; i < Nequipamentos; i++) {
-        printEquipamento(equipamentos[i]);
-        printf("\n");
+                system("cls");
+            }
     }
-
     return 0;
 }

@@ -44,6 +44,7 @@ Cadastro de Operador:
 > Nome do Operador (Máximo de 70 Caractéres): 
 > Setor (2 Letras, 2 Dígitos):
 > Nível Operacional (BASICO, INTERMEDIARIO, SUPERVISOR):
+> Estado Operacional Atual ():
 ```
 
 
@@ -60,11 +61,11 @@ Cadastro de equipamento:
 
 Categorias Operacionais:
 
-AGV
-BRACO_ARTICULADO
-ESTEIRAS
-SORTERS
-TRANSELEVADOR
+1. AGV
+2. BRACO_ARTICULADO
+3. ESTEIRAS
+4. SORTERS
+5. TRANSELEVADOR
 
 > Código de categoria: 
 > Setor (2 Letras, 2 Dígitos): 
@@ -281,9 +282,11 @@ Operações Realizadas: <operacoes>
 ```
 ===== EQUIPAMENTOS - SETOR <setor> =====
 
-<nome> - XXX
+<tipo> - XXX
 Setor: <setor>
 Estado de Dispoonibilidade: <estado>
+ID Operador: <idop>
+Prioridade: <prioridade>
 Ultima Manutenção: <ultima_manutencao>
 
 <nome> - YYY
@@ -326,8 +329,7 @@ Operações Realizadas: <operacoes>
 
 
 ## Perguntas p/ fazer para a lucia
-1. Perguntar sobre o input de strings (MAIUSCULAS, SEM ACENTO)
 2. Perguntas se a quantidade de tipos esta boa (tipos: braço articulado, esteiras, veiculos guiados automaticamente (AVGs), sorters, transelevadores)
-3. Como devemos registrar as ocorrenias -> tipos de ocorrencias? strings de descricao?
+3. Como devemos registrar as ocorrenias -> tipos de ocorrencias? strings de descricao? so string de descricao, operador / eqiuipamento
 4. Quantos relatórios devemos gerar?
-5. Em que estado o operador deve ser inicializado OU devemos adicionar uma oção para o inicializar em um estado ja?
+5. Em que estado o operador deve ser inicializado OU devemos adicionar uma oção para o inicializar em um estado ja? perguntar

@@ -1,2 +1,2 @@
 # Central de Operações Autonomas
-Trabalho 2 - Porgramação De Computadores (Prática)
+Trabalho 2 - Programação De Computadores (Prática)
