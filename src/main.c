@@ -267,7 +267,7 @@ int main() {
             case 2:
                 break;
             default:
-                printf("INVALIDO");
+                printf("\nINVALIDO\n\n");
                 system("pause");
         }
     } while (input != 2);
