@@ -31,6 +31,11 @@ void limpaBuffer() {
     while (c = getchar() != '\n' && c != EOF);
 }
 
+void pause() {
+    printf("\nAperte ENTER para continuar. ");
+    limpaBuffer();
+}
+
 int scanfInput() {
     int input;
 
@@ -54,7 +59,7 @@ void readInt(int *num) {
     limpaBuffer();
 }
 
-void printEquipamento(Equipamento equipamento) {
+void printEquipamento(Equipamentos equipamento) {
     printf("\nID: %s", equipamento.ID);
     printf("\nTipo: %s", equipamento.tipo);
     printf("\nSetor Associado: %s", equipamento.setorAssociado);
@@ -107,9 +112,34 @@ int verificar(char s[], int size, int numOnly) {
     //se nao, a funcao eh falsa
     return 0;
 }
+
+int verificaIdUnicoEquipamento(char idAtual[], Equipamentos listaStruct[], int listaSize){
+    int i;
+
+    for (i = 0; i < listaSize; i++) {
+        if (strcmp(idAtual, listaStruct[i].ID) == 0) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int verificaIdUnicoOperador(char idAtual[], Operadores listaStruct[], int listaSize){
+    int i;
+
+    for (i = 0; i < listaSize; i++) {
+        if (strcmp(idAtual, listaStruct[i].ID) == 0) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
 // DASHBOARD PRINCIPAL
 void printDashboard() {
-    system("cls");
+    system("cls || clear");
     printf("+------------------------------------------------------------------------------+\n");
     printf("|               Orbytec Sistemas Integrados - Setor VX27 - Dashboard           |\n");
     printf("+-------------------------+--------------------------+-------------------------+\n");
@@ -137,38 +167,44 @@ void printDashboard() {
     printf("+------------------------------------------------------------------------------+\n");
 }
 
-Equipamento registrarEquipamento() {
-    Equipamento equipamento, equipamentoTemp;
+Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamento) {
+    Equipamentos equipamento, equipamentoTemp;
     int input;
 
     //pega  guarda o ID do usuario
     do {
         //le um string
-        system("cls");
-        printf("Escreva o ID do equipamento: ");
+        system("cls || clear");
+        printf("Cadastro de equipamento:\n\n");
+        printf("> ID do equipamento (1 Letra, 2 Dígitos): ");
         readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
         //verifica se for valido
         if (verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0)) {
-            strcpy(equipamento.ID, equipamentoTemp.ID);
+            if (verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamento)) {
+                strcpy(equipamento.ID, equipamentoTemp.ID);
+            } else {
+                printf("\nID já cadastrado\n\n");
+                pause();
+            }
         } else {
             printf("\nID Inválido\n\n");
-            system("pause");
+            pause();
         }
-    } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0));
+    } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0) || !verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamento));
 
     //pega e guarda o tipo de equipamento
     do {
         //le numero inteiro
         input = 0;
 
-        system("cls");
-        printf("Escolha o tipo de equipamento: \n\n\t");
-        printf("1: AGV\n\t");
-        printf("2: Braço-Articulado\n\t");
-        printf("3: Esteira\n\t");
-        printf("4: sorter\n\t");
-        printf("5: transelevador\n\n> ");
+        system("cls || clear");
+        printf("Categorias Operacionais:\n\n\t");
+        printf("1. AGV\n\t");
+        printf("2. BRACO_ARTICULADO\n\t");
+        printf("3. ESTEIRAS\n\t");
+        printf("4. SORTERS\n\t");
+        printf("5. TRANSELEVADOR\n\t\n> Categoria: ");
         readInt(&input);
 
         //verifica se eh valido
@@ -190,7 +226,7 @@ Equipamento registrarEquipamento() {
                 break;
             default:
                 printf("\nINPUT INVALIDO\n\n");
-                system("pause");
+                pause();
 
         }
     } while (input < 1 || input > 5);
@@ -198,8 +234,8 @@ Equipamento registrarEquipamento() {
     //pega e guarda o setor
     do {
         //le string
-        system("cls");
-        printf("Escreva o Setor Associado ao equipamento: ");
+        system("cls || clear");
+        printf("> Setor (2 Letras, 2 Dígitos): ");
         readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
 
         //verifica se eh valido
@@ -207,7 +243,7 @@ Equipamento registrarEquipamento() {
             strcpy(equipamento.setorAssociado, equipamentoTemp.setorAssociado);
         } else {
             printf("\nSetor Inválido\n\n");
-            system("pause");
+            pause();
         }
     } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
 
@@ -216,7 +252,7 @@ Equipamento registrarEquipamento() {
         //le numero inteiro
         input = 0;
 
-        system("cls");
+        system("cls || clear");
         printf("Qual é o Estado Operacional atual do equipamento? \n\n\t");
         printf("1: Ativo\n\t");
         printf("2: Inativo\n\t");
@@ -236,7 +272,7 @@ Equipamento registrarEquipamento() {
                 break;
             default:
                 printf("\nINPUT INVALIDO\n\n");
-                system("pause");
+                pause();
 
         }
     } while (input < 1 || input > 3);
@@ -244,8 +280,8 @@ Equipamento registrarEquipamento() {
     //pega e guarda o ID do operador
     do {
         //le string
-        system("cls");
-        printf("Escreva o ID do Operador do equipamento: ");
+        system("cls || clear");
+        printf("> ID do Operador Associado (4 Dígitos): ");
         readString(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo));
 
         //verifica se eh valido
@@ -253,7 +289,7 @@ Equipamento registrarEquipamento() {
             strcpy(equipamento.IDo, equipamentoTemp.IDo);
         } else {
             printf("\nID Inválido\n\n");
-            system("pause");
+            pause();
         }
     } while (!verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo), 1));
 
@@ -262,11 +298,8 @@ Equipamento registrarEquipamento() {
         //le numero inteiro
         input = 0;
 
-        system("cls");
-        printf("Qual é a Importáncia (Nível de Prioridade) do equipamento? \n\n\t");
-        printf("1: Baixa\n\t");
-        printf("2: Média\n\t");
-        printf("3: Alta\n\n> ");
+        system("cls || clear");
+        printf("> Nível de Prioridade (1. BAIXA, 2. MEDIA, 3. ALTA): ");
         readInt(&input);
 
         //verifica se eh valido
@@ -282,7 +315,7 @@ Equipamento registrarEquipamento() {
                 break;
             default:
                 printf("\nINPUT INVALIDO\n\n");
-                system("pause");
+                pause();
 
         }
     } while (input < 1 || input > 3);
@@ -290,25 +323,29 @@ Equipamento registrarEquipamento() {
     return equipamento;
 }
 
-
 // CADASTRO DE OPERADOR
-Operadores cadastroOp(){
+Operadores cadastroOp(Operadores operadores[], int nOperadores){
     Operadores op;
     int localInput = 0;
     int len = 0;
 
-    system("cls");
+    system("cls || clear");
 
     printf("Cadastro de Operador:\n\n");
     do {
         printf("> ID do Operador (4 Dígitos, outros serão desconsiderados):  ");
         readString(op.ID, sizeof(op.ID));
 
-        if (!verificar(op.ID, sizeof(op.ID), 1)) {
+        if (verificar(op.ID, sizeof(op.ID), 1)) {
+            if (!verificaIdUnicoOperador(op.ID, operadores, nOperadores)) {
+                printf("\nID já cadastrado!\n\n");
+                pause();
+            }
+        } else {
             printf("\nID Inválido!\n\n");
-            system("pause");
-        } 
-    } while (!verificar(op.ID, sizeof(op.ID), 1));
+            pause();
+        }
+    } while ((!verificar(op.ID, sizeof(op.ID), 1)) || (!verificaIdUnicoOperador(op.ID, operadores, nOperadores)));
     
     printf("> Nome do Operador (Máximo de 70 Caractéres): ");
     readString(op.nome, sizeof(op.nome));
@@ -319,7 +356,7 @@ Operadores cadastroOp(){
 
         if (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0)) {
             printf("\nSetor Inválido!\n\n");
-            system("pause");
+            pause();
         } 
     } while (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0));
 
@@ -373,20 +410,19 @@ Operadores cadastroOp(){
     }while(localInput != 1 && localInput != 2 && localInput != 3 && localInput != 4);
 
     printf("\n\nOperador cadastrado com sucesso!\n");
-    system("pause");
+    pause();
 
     return op;
 }
 
 
 // ========== MAIN ==========
-
-
 int main() {
-    Equipamentos equipamentos[150], equipamentoTemp;
+    Equipamentos equipamentos[150];
+    Operadores operadores[50];
 
-    int input;
-    int shutdown = 0;
+    int nEquipamento = 0, nOperadores = 0;
+    int input, shutdown = 0;;
 
     setlocale(LC_ALL, "portuguese");
 
@@ -396,11 +432,26 @@ int main() {
 
         switch(input){
             case 1:
-                cadastroOp();
+                if (nOperadores < 50){
+                    operadores[nOperadores] = cadastroOp(operadores, nOperadores);
+                    nOperadores++;
+                } else {
+                    printf("ERRO: O número máximo de operadores (50) já foi registrado!");
+                    pause();
+                    system("cls || clear");
+                }
+                
                 break;
 
             case 2:
-                registrarEquipamento();
+                if (nEquipamento < 150){
+                    equipamentos[nEquipamento] = registrarEquipamento(equipamentos, nEquipamento);
+                    nEquipamento++;
+                } else {
+                    printf("ERRO: O número máximo de equipamentos (150) já foi registrado!");
+                    pause();
+                    system("cls || clear");
+                }
                 break;
 
             case 3:
@@ -421,8 +472,8 @@ int main() {
 
             default:
                 printf("Comando inválido!");
-                system("pause");
-                system("cls");
+                pause();
+                system("cls || clear");
             }
     }
     return 0;
