@@ -577,7 +577,7 @@ int main() {
                                         }
 
                                         if (i + 1 == nOperadores) {
-                                            printf("\nID INVALIDO\n\n");
+                                            printf("\nID NAO ENCONTRADO\n\n");
                                             system("pause");
                                         }
                                     }
@@ -637,7 +637,7 @@ int main() {
                                         }
 
                                         if (i + 1 == nEquipamentos) {
-                                            printf("\nID INVALIDO\n\n");
+                                            printf("\nID NAO ENCONTRADO\n\n");
                                             system("pause");
                                         }
                                     }
@@ -666,6 +666,88 @@ int main() {
                         case 4:
                             break;
                         case 5:
+                            do {
+                                system("cls");
+                                input = 0;
+
+                                printf("1: Desativar Operador\n");
+                                printf("2: Desativar Equipamento\n");
+                                printf("3: Voltar\n\n> ");
+
+                                readInt(&input);
+
+                                switch(input) {
+                                    case 1:
+                                        if (nOperadores > 0) {
+                                            do {
+                                                system("cls");
+
+                                                operadorEscolhido = -1;
+
+                                                printf("Escreva o ID do operador que você quer tirar do registro: ");
+                                                readString(operadorTemp.ID, sizeof(operadorTemp.ID));
+
+                                                for (i = 0; i < nOperadores; i++) {
+                                                    if (strcmp(operadores[i].ID, operadorTemp.ID) == 0) {
+                                                        operadorEscolhido = i;
+                                                        break;
+                                                    }
+
+                                                    if (i + 1 == nOperadores) {
+                                                        printf("\nID NAO ENCONTRADO\n\n");
+                                                        system("pause");
+                                                    }
+                                                }
+                                            } while (operadorEscolhido == -1);
+
+                                            for (i = operadorEscolhido; i < nOperadores; i++) {
+                                                operadores[i] = operadores[i + 1];
+                                            }
+                                            nOperadores--;
+                                        } else {
+                                            printf("\nNão existem operadores ainda\n\n");
+                                            system("pause");
+                                        }
+                                        break;
+                                    case 2:
+                                        if (nEquipamentos > 0) {
+                                            do {
+                                                system("cls");
+
+                                                equipamentoEscolhido = -1;
+
+                                                printf("Escreva o ID do equipamento que você quer tirar do registro: ");
+                                                readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
+
+                                                for (i = 0; i < nEquipamentos; i++) {
+                                                    if (strcmp(equipamentos[i].ID, equipamentoTemp.ID) == 0) {
+                                                        equipamentoEscolhido = i;
+                                                        break;
+                                                    }
+
+                                                    if (i + 1 == nEquipamentos) {
+                                                        printf("\nID NAO ENCONTRADO\n\n");
+                                                        system("pause");
+                                                    }
+                                                }
+                                            } while (equipamentoEscolhido == -1);
+
+                                            for (i = equipamentoEscolhido; i < nEquipamentos; i++) {
+                                                equipamentos[i] = equipamentos[i + 1];
+                                            }
+                                            nEquipamentos--;
+                                        } else {
+                                            printf("\nNão existem equipamentos ainda\n\n");
+                                            system("pause");
+                                        }
+                                        break;
+                                    case 3:
+                                        break;
+                                    default:
+                                        printf("\nINPUT INVALIDO\n\n");
+                                        system("pause");
+                                }
+                            } while (input != 3);
                             break;
                         case 6:
                             break;
