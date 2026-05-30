@@ -3,6 +3,11 @@
 #include <locale.h>
 #include <string.h>
 #include <ctype.h>
+/*
+    Operador operadores[50];
+    Equipamento equipamentos[150], equipamentoTemp;
+    int Nequipamentos, input, i;
+*/
 
 // ========== STRUCTS ==========
 
@@ -456,11 +461,11 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
 
 // ========== MAIN ==========
 int main() {
-    Equipamentos equipamentos[150];
-    Operadores operadores[50];
+    Equipamentos equipamentos[150], equipamentoTemp;
+    Operadores operadores[50], operadorTemp;
 
-    int nEquipamentos = 0, nOperadores = 0;
-    int input, shutdown = 0;;
+    int nEquipamentos = 0, nOperadores = 0, equipamentoEscolhido = -1, operadorEscolhido = -1;
+    int input, shutdown = 0, i;
 
     setlocale(LC_ALL, "portuguese");
 
@@ -493,7 +498,182 @@ int main() {
                 break;
 
             case 3:
-                //atualizarDados();
+                do {
+                    system("cls");
+                    input = 0;
+                    printf("Escolha o que atualizar:\n\n1: Estado Operacional de um Equipamento\n2: Disponibilidade de Operadores\n3: Setor de um Equipamento\n4: Registrar Ocorrencias\n5: Desativar Registros\n6: Voltar\n\n> ");
+                    readInt(&input);
+                    switch(input) {
+                        case 1:
+                            if (nEquipamentos > 0) {
+                                do {
+                                    system("cls");
+
+                                    equipamentoEscolhido = -1;
+
+                                    printf("Escreva o ID do equipamento que você quer modificar: ");
+                                    readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
+
+                                    for (i = 0; i < nEquipamentos; i++) {
+                                        if (strcmp(equipamentos[i].ID, equipamentoTemp.ID) == 0) {
+                                            equipamentoEscolhido = i;
+                                            break;
+                                        }
+
+                                        if (i + 1 == nEquipamentos) {
+                                            printf("\nID INVALIDO\n\n");
+                                            system("pause");
+                                        }
+                                    }
+                                } while (equipamentoEscolhido == -1);
+
+                                do {
+                                    //le numero inteiro
+                                    input = 0;
+
+                                    system("cls");
+                                    printf("Qual é o Novo Estado Operacional do equipamento? \n\n\t");
+                                    printf("1: Ativo\n\t");
+                                    printf("2: Inativo\n\t");
+                                    printf("3: Manutenção\n\n> ");
+                                    readInt(&input);
+
+                                    //verifica o numero
+                                    switch(input) {
+                                        case 1:
+                                            strcpy(equipamentos[equipamentoEscolhido].estado, "ATIVO");
+                                            break;
+                                        case 2:
+                                            strcpy(equipamentos[equipamentoEscolhido].estado, "INATIVO");
+                                            break;
+                                        case 3:
+                                            strcpy(equipamentos[equipamentoEscolhido].estado, "MANUTENCAO");
+                                            break;
+                                        default:
+                                            printf("\nINPUT INVALIDO\n\n");
+                                            system("pause");
+
+                                    }
+                                } while (input < 1 || input > 3);
+                            } else {
+                                printf("\nNão existem equipamentos ainda\n\n");
+                                system("pause");
+                            }
+                            break;
+                        case 2:
+                            if (nOperadores > 0) {
+                                do {
+                                    system("cls");
+
+                                    operadorEscolhido = -1;
+
+                                    printf("Escreva o ID do operador que você quer modificar: ");
+                                    readString(operadorTemp.ID, sizeof(operadorTemp.ID));
+
+                                    for (i = 0; i < nOperadores; i++) {
+                                        if (strcmp(operadores[i].ID, operadorTemp.ID) == 0) {
+                                            operadorEscolhido = i;
+                                            break;
+                                        }
+
+                                        if (i + 1 == nOperadores) {
+                                            printf("\nID INVALIDO\n\n");
+                                            system("pause");
+                                        }
+                                    }
+                                } while (operadorEscolhido == -1);
+
+                                do {
+                                    //le numero inteiro
+                                    input = 0;
+
+                                    system("cls");
+                                    printf("Qual é o novo status do operador? \n\n\t");
+                                    printf("1: Ativo\n\t");
+                                    printf("2: Ocupado\n\t");
+                                    printf("3: Inativo\n\t ");
+                                    printf("4: Bloqueado\n\n> ");
+                                    readInt(&input);
+
+                                    //verifica o numero
+                                    switch(input) {
+                                        case 1:
+                                            strcpy(operadores[0].estado, "ATIVO");
+                                            break;
+                                        case 2:
+                                            strcpy(operadores[0].estado, "Ocupado");
+                                            break;
+                                        case 3:
+                                            strcpy(operadores[0].estado, "Inativo");
+                                            break;
+                                        case 4:
+                                            strcpy(operadores[0].estado, "Bloqueado");
+                                            break;
+                                        default:
+                                            printf("\nINPUT INVALIDO\n\n");
+                                            system("pause");
+
+                                    }
+                                } while (input < 1 || input > 3);
+                            } else {
+                                printf("\nNão existem operadores ainda\n\n");
+                                system("pause");
+                            }
+                            break;
+                        case 3:
+                            if (nEquipamentos > 0) {
+                                do {
+                                    system("cls");
+
+                                    equipamentoEscolhido = -1;
+
+                                    printf("Escreva o ID do equipamento que você quer modificar: ");
+                                    readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
+
+                                    for (i = 0; i < nEquipamentos; i++) {
+                                        if (strcmp(equipamentos[i].ID, equipamentoTemp.ID) == 0) {
+                                            equipamentoEscolhido = i;
+                                            break;
+                                        }
+
+                                        if (i + 1 == nEquipamentos) {
+                                            printf("\nID INVALIDO\n\n");
+                                            system("pause");
+                                        }
+                                    }
+                                } while (equipamentoEscolhido == -1);
+
+                                //pega e guarda o setor
+                                do {
+                                    //le string
+                                    system("cls");
+                                    printf("Escreva o novo Setor Associado ao equipamento: ");
+                                    readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
+
+                                    //verifica se eh valido
+                                    if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0)) {
+                                        strcpy(equipamentos[0].setorAssociado, equipamentoTemp.setorAssociado);
+                                    } else {
+                                        printf("\nSetor Inválido\n\n");
+                                        system("pause");
+                                    }
+                                } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
+                            } else {
+                                printf("\nNão existem equipamentos ainda\n\n");
+                                system("pause");
+                            }
+                            break;
+                        case 4:
+                            break;
+                        case 5:
+                            break;
+                        case 6:
+                            break;
+                        default:
+                            printf("\nINVALIDO\n\n");
+                            system("pause");
+                    }
+                } while (input != 6);
                 break;
 
             case 4:
