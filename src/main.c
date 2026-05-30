@@ -137,24 +137,54 @@ int verificaIdUnicoOperador(char idAtual[], Operadores listaStruct[], int listaS
     return 1;
 }
 
-// DASHBOARD PRINCIPAL
-void printDashboard() {
+// DASHBOARD
+void printDashboard(Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
     system("cls || clear");
     printf("+------------------------------------------------------------------------------+\n");
     printf("|               Orbytec Sistemas Integrados - Setor VX27 - Dashboard           |\n");
     printf("+-------------------------+--------------------------+-------------------------+\n");
     printf("|  Ocorrências Recentes:  |    Operadores Ativos:    |   Equipamentos Ativos:  |\n");
     printf("|=========================|==========================|=========================|\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
-    printf("|                         |                          |                         |\n");
+
+    for (int i = 0; i < 10; i++) {
+        
+        // OCORRENCIAS
+        // vazia por agora -> esperando a implementacao das ocorrencias
+        printf("| %-23s ", "");
+
+        // OPERADORES ATIVOS
+        printf("| ");
+        if (i < nOperadores) {
+            printf("%s - %s", operadores[i].ID, operadores[i].estado);
+            
+            int espacoGasto = strlen(operadores[i].ID) + strlen(operadores[i].estado) + 3;
+            int espacoRestante = 24 - espacoGasto;
+            
+            for (int j = 0; j < espacoRestante; j++) {
+                printf(" ");
+            }
+        } else {
+            printf("%-24s", "");
+        }
+        printf(" ");
+
+        // EQUIPAMENTOS ATIVOS
+        printf("| ");
+        if (i < nEquipamentos) {
+            printf("%s - %s", equipamentos[i].ID, equipamentos[i].estado);
+            
+            int espacoGasto = strlen(equipamentos[i].ID) + strlen(equipamentos[i].estado) + 3;
+            int espacoRestante = 23 - espacoGasto;
+            
+            for (int j = 0; j < espacoRestante; j++) {
+                printf(" ");
+            }
+        } else {
+            printf("%-23s", "");
+        }
+        printf(" |\n");
+    }
+
     printf("+-------------------------+--------------------------+-------------------------+\n");
     printf("|                                    Menu:                                     |\n");
     printf("|==============================================================================|\n");
@@ -167,7 +197,7 @@ void printDashboard() {
     printf("+------------------------------------------------------------------------------+\n");
 }
 
-Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamento) {
+Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos) {
     Equipamentos equipamento, equipamentoTemp;
     int input;
 
@@ -181,7 +211,7 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamento)
 
         //verifica se for valido
         if (verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0)) {
-            if (verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamento)) {
+            if (verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamentos)) {
                 strcpy(equipamento.ID, equipamentoTemp.ID);
             } else {
                 printf("\nID já cadastrado\n\n");
@@ -191,7 +221,7 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamento)
             printf("\nID Inválido\n\n");
             pause();
         }
-    } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0) || !verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamento));
+    } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0) || !verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamentos));
 
     //pega e guarda o tipo de equipamento
     do {
@@ -421,13 +451,13 @@ int main() {
     Equipamentos equipamentos[150];
     Operadores operadores[50];
 
-    int nEquipamento = 0, nOperadores = 0;
+    int nEquipamentos = 0, nOperadores = 0;
     int input, shutdown = 0;;
 
     setlocale(LC_ALL, "portuguese");
 
     while(!shutdown){
-        printDashboard();
+        printDashboard(operadores, nOperadores, equipamentos, nEquipamentos);
         input = scanfInput();
 
         switch(input){
@@ -444,9 +474,9 @@ int main() {
                 break;
 
             case 2:
-                if (nEquipamento < 150){
-                    equipamentos[nEquipamento] = registrarEquipamento(equipamentos, nEquipamento);
-                    nEquipamento++;
+                if (nEquipamentos < 150){
+                    equipamentos[nEquipamentos] = registrarEquipamento(equipamentos, nEquipamentos);
+                    nEquipamentos++;
                 } else {
                     printf("ERRO: O número máximo de equipamentos (150) já foi registrado!");
                     pause();
