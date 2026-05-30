@@ -3,11 +3,9 @@
 #include <locale.h>
 #include <string.h>
 #include <ctype.h>
-/*
-    Operador operadores[50];
-    Equipamento equipamentos[150], equipamentoTemp;
-    int Nequipamentos, input, i;
-*/
+
+#define MAXEQUIPAMENTOS 150
+#define MAXOPERADORES 50
 
 // ========== STRUCTS ==========
 
@@ -28,6 +26,12 @@ typedef struct operadores {
     char estado[10]; // ATIVO, OCUPADO, INATIVO, BLOQUEADO
     int quantOp;
 } Operadores;
+
+typedef struct ocorrencias {
+    char ID[5];
+    char emissor[71];
+    char descricao[101];
+} Ocorrencias;
 
 // ========== FUNCOES ==========
 
@@ -131,6 +135,18 @@ int verificaIdUnicoEquipamento(char idAtual[], Equipamentos listaStruct[], int l
 }
 
 int verificaIdUnicoOperador(char idAtual[], Operadores listaStruct[], int listaSize){
+    int i;
+
+    for (i = 0; i < listaSize; i++) {
+        if (strcmp(idAtual, listaStruct[i].ID) == 0) {
+            return 0;
+        }
+    }
+
+    return 1;
+}
+
+int verificaIdUnicoOcorrencia(char idAtual[], Ocorrencias listaStruct[], int listaSize){
     int i;
 
     for (i = 0; i < listaSize; i++) {
@@ -359,6 +375,45 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
 }
 
 // CADASTRO DE OPERADOR
+Ocorrencias registrarOcorrencia(Ocorrencias ocorrencias[], int nOcorrencias){
+    Ocorrencias ocorrencia;
+    int localInput = 0;
+    int len = 0;
+
+    system("cls || clear");
+
+    printf("Cadastro de Ocorrencia:\n\n");
+    do {
+        system("cls");
+
+        printf("> ID da Ocorrencia (4 Dígitos, outros serão desconsiderados):  ");
+        readString(ocorrencia.ID, sizeof(ocorrencia.ID));
+
+        if (verificar(ocorrencia.ID, sizeof(ocorrencia.ID), 1)) {
+            if (!verificaIdUnicoOcorrencia(ocorrencia.ID, ocorrencias, nOcorrencias)) {
+                printf("\nID já cadastrado!\n\n");
+                pause();
+            }
+        } else {
+            printf("\nID Inválido!\n\n");
+            pause();
+        }
+    } while ((!verificar(ocorrencia.ID, sizeof(ocorrencia.ID), 1)) || (!verificaIdUnicoOcorrencia(ocorrencia.ID, ocorrencias, nOcorrencias)));
+
+    system("cls");
+    printf("> Nome do Emissor (Máximo de 70 Caractéres): ");
+    readString(ocorrencia.emissor, sizeof(ocorrencia.emissor));
+
+    system("cls");
+    printf("> Descrição da ocorrencia (Máximo de 100 caractéres): ");
+    readString(ocorrencia.descricao, sizeof(ocorrencia.descricao));
+
+    printf("\n\nOcorrencia cadastrada com sucesso!\n");
+    pause();
+
+    return ocorrencia;
+}
+
 Operadores registrarOperador(Operadores operadores[], int nOperadores){
     Operadores op;
     int localInput = 0;
@@ -461,10 +516,11 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
 
 // ========== MAIN ==========
 int main() {
-    Equipamentos equipamentos[150], equipamentoTemp;
-    Operadores operadores[50], operadorTemp;
+    Equipamentos equipamentos[MAXEQUIPAMENTOS], equipamentoTemp;
+    Operadores operadores[MAXOPERADORES], operadorTemp;
+    Ocorrencias ocorrencias[MAXEQUIPAMENTOS];
 
-    int nEquipamentos = 0, nOperadores = 0, equipamentoEscolhido = -1, operadorEscolhido = -1;
+    int nEquipamentos = 0, nOperadores = 0, nOcorrencias= 0, equipamentoEscolhido = -1, operadorEscolhido = -1;
     int input, shutdown = 0, i;
 
     setlocale(LC_ALL, "portuguese");
@@ -475,11 +531,11 @@ int main() {
 
         switch(input){
             case 1:
-                if (nOperadores < 50){
+                if (nOperadores < MAXOPERADORES){
                     operadores[nOperadores] = registrarOperador(operadores, nOperadores);
                     nOperadores++;
                 } else {
-                    printf("ERRO: O número máximo de operadores (50) já foi registrado!");
+                    printf("ERRO: O número máximo de operadores (%2d) já foi registrado!", MAXOPERADORES);
                     pause();
                     system("cls || clear");
                 }
@@ -487,11 +543,11 @@ int main() {
                 break;
 
             case 2:
-                if (nEquipamentos < 150){
+                if (nEquipamentos < MAXEQUIPAMENTOS){
                     equipamentos[nEquipamentos] = registrarEquipamento(equipamentos, nEquipamentos);
                     nEquipamentos++;
                 } else {
-                    printf("ERRO: O número máximo de equipamentos (150) já foi registrado!");
+                    printf("ERRO: O número máximo de equipamentos (%3d) já foi registrado!",MAXEQUIPAMENTOS);
                     pause();
                     system("cls || clear");
                 }
@@ -664,6 +720,14 @@ int main() {
                             }
                             break;
                         case 4:
+                            if (nOcorrencias < MAXEQUIPAMENTOS){
+                                ocorrencias[nOcorrencias] = registrarOcorrencia(ocorrencias, nOcorrencias);
+                                nOcorrencias++;
+                            } else {
+                                printf("ERRO: O número máximo de ocorrencias (%2d) já foi registrado!", MAXEQUIPAMENTOS);
+                                pause();
+                                system("cls || clear");
+                            }
                             break;
                         case 5:
                             do {
