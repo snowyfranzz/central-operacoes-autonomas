@@ -29,7 +29,7 @@ typedef struct operadores {
 
 typedef struct ocorrencias {
     char ID[5];
-    char emissor[71];
+    char emissor[17];
     char descricao[101];
 } Ocorrencias;
 
@@ -159,7 +159,7 @@ int verificaIdUnicoOcorrencia(char idAtual[], Ocorrencias listaStruct[], int lis
 }
 
 // DASHBOARD
-void printDashboard(Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
+void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
     system("cls || clear");
     printf("+------------------------------------------------------------------------------+\n");
     printf("|               Orbytec Sistemas Integrados - Setor VX27 - Dashboard           |\n");
@@ -170,8 +170,20 @@ void printDashboard(Operadores operadores[], int nOperadores, Equipamentos equip
     for (int i = 0; i < 10; i++) {
 
         // OCORRENCIAS
-        // vazia por agora -> esperando a implementacao das ocorrencias
-        printf("| %-23s ", "");
+        printf("| ");
+        if (i < nOcorrencias) {
+            printf("%s - %s", ocorrencias[i].ID, ocorrencias[i].emissor);
+
+            int espacoGasto = strlen(ocorrencias[i].ID) + strlen(ocorrencias[i].emissor) + 3;
+            int espacoRestante = 23 - espacoGasto;
+
+            for (int j = 0; j < espacoRestante; j++) {
+                printf(" ");
+            }
+        } else {
+            printf("%-23s", "");
+        }
+        printf(" ");
 
         // OPERADORES ATIVOS
         printf("| ");
@@ -401,7 +413,7 @@ Ocorrencias registrarOcorrencia(Ocorrencias ocorrencias[], int nOcorrencias){
     } while ((!verificar(ocorrencia.ID, sizeof(ocorrencia.ID), 1)) || (!verificaIdUnicoOcorrencia(ocorrencia.ID, ocorrencias, nOcorrencias)));
 
     system("cls");
-    printf("> Nome do Emissor (Máximo de 70 Caractéres): ");
+    printf("> Primeiro Nome do Emissor (Máximo de 16 Caractéres): ");
     readString(ocorrencia.emissor, sizeof(ocorrencia.emissor));
 
     system("cls");
@@ -526,7 +538,7 @@ int main() {
     setlocale(LC_ALL, "portuguese");
 
     while(!shutdown){
-        printDashboard(operadores, nOperadores, equipamentos, nEquipamentos);
+        printDashboard(ocorrencias, nOcorrencias, operadores, nOperadores, equipamentos, nEquipamentos);
         input = scanfInput();
 
         switch(input){
