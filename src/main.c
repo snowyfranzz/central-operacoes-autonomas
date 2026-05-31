@@ -930,6 +930,11 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                         ocorrencias[i] = ocorrencias[i + 1];
                                     }
                                     (*nOcorrencias)--;
+
+                                    system("cls");
+                                    printf("Ocorrencia Removida com Sucesso!\n\n");
+                                    system("pause");
+
                                 }
                             } else {
                                 printf("\nNão existem ocorrencias ainda\n\n");
