@@ -1197,6 +1197,137 @@ int main() {
 
             case 5:
                 //relatoriosOp();
+
+
+            system ("cls");
+            printf("\nQual relatório operacional você quer checar?");
+            printf("\n1 --> Todos os operadores");
+            printf("\n2 --> Informações dos operadores de um setor específico");
+            printf("\n3 --> Informações dos equipamentos de um setor específico");
+            printf("\n4 --> Informações do setor");
+            printf("\n5 --> Operador de cada setor com maior número de atividades realizadas\n>");
+            int list;
+            int i=0;
+            int h=0;
+            char setorDet[4];
+            char equipamentoDet[4];
+
+
+            scanf("%d",&list);
+        switch(list)
+        {
+        case 1:
+            system("cls");
+            printf("Quantidade de operadores: %d",nOperadores);
+           for (i=0; i < nOperadores; i++)
+           {
+               printf("\nID: %s",operadores[i].ID);
+               getchar();
+               printf("\nNome: %s",operadores[i].nome);
+               getchar();
+               printf("\nSetor: %s",operadores[i].setorAssociado);
+               getchar();
+               printf("\nNível Operacional: %s", operadores[i].nivelOp);
+               getchar();
+               printf("\nStatus: %s", operadores[i].estado);
+               getchar();
+               printf("\nQuantidade de operações: %s", operadores[i].quantOp);
+               getchar();
+           }
+           i=0;
+
+            break;
+
+        case 2:
+
+            system("cls");
+            printf("Digite o setor desejado: ");
+            scanf("%s",&setorDet);
+        for (i=0; i < nOperadores; i++)
+        {
+            if (strcmp(operadores[i].setorAssociado, setorDet) == 0)
+
+            {
+               printf("\nID: %s",operadores[i].ID);
+               getchar();
+               printf("\nNome: %s",operadores[i].nome);
+               getchar();
+               printf("\nStatus: %s", operadores[i].estado);
+               getchar();
+            }
+        }
+            system ("cls");
+
+            i=0;
+
+            break;
+        case 3:
+
+        system("cls");
+        printf("Digite o setor desejado: ");
+        scanf("%s",&setorDet);
+        for (h=0; h < nEquipamentos; h++)
+        {
+            if (strcmp(equipamentos[h].setorAssociado, setorDet) == 0)
+
+            {
+               printf("\nID: %s",equipamentos[h].ID);
+               getchar();
+               printf("\nTipo: %s",equipamentos[h].tipo);
+               getchar();
+                printf("\nEstado Operacional: %s",equipamentos[h].estado);
+                getchar();
+            }
+        }
+            system ("cls");
+            h=0;
+
+            break;
+        case 4:
+            system ("cls");
+            printf("Digite o setor desejado: ");
+            scanf("%s",&setorDet);
+
+
+             for (i = 0; i < nOperadores; i++)
+               {
+                   if (strcmp(equipamentos[h].setorAssociado, setorDet) == 0)
+                   {
+                       printf("\nID: %s",operadores[i].ID);
+                        getchar();
+                        printf("\nNome: %s",operadores[i].nome);
+                        getchar();
+                        printf("\nEquipamento: %d",equipamentoEscolhido);
+                        getchar();
+                   }
+
+               }
+               system ("cls");
+               h=0;
+               i=0;
+
+               break;
+
+        case 5:
+            system("cls");
+
+        for(i = 0; i < nOperadores; i++)
+    {
+        if(operadores[i].quantOp > maior)
+        {
+            printf("O operador com mais operacoes do setor %s e %s",setorDet,operadores[i].ID);
+            getchar;
+        }
+    }
+            system("cls");
+            i=0;
+            h=0;
+            break;
+        }
+
+
+
+
                 break;
 
             case 6:
