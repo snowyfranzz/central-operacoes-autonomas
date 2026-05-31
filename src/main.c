@@ -532,11 +532,35 @@ int main() {
     Ocorrencias ocorrencias[MAXEQUIPAMENTOS], ocorrenciaTemp;
 
     int nEquipamentos = 0, nOperadores = 0, nOcorrencias= 0, equipamentoEscolhido = -1, operadorEscolhido = -1, ocorrenciaEscolhida = -1;
-    int input, shutdown = 0, i;
+    int input, shutdown = 0, i, j;
 
     setlocale(LC_ALL, "portuguese");
 
     while(!shutdown){
+
+        //reorganiza os Equipamentos em base a prioridade
+        if (nEquipamentos > 0) {
+            for (i = 0; i < nEquipamentos; i++) {
+                for (j = nEquipamentos - 1; j > i; j--) {
+                    if (strcmp(equipamentos[j].prioridade, "ALTA") == 0 && strcmp(equipamentos[i].prioridade, "ALTA") != 0) {
+                        equipamentoTemp = equipamentos[i];
+                        equipamentos[i] = equipamentos[j];
+                        equipamentos[j] = equipamentoTemp;
+                    }
+                }
+            }
+
+            for (i = 0; i < nEquipamentos; i++) {
+                for (j = nEquipamentos - 1; j > i; j--) {
+                    if (strcmp(equipamentos[j].prioridade, "MEDIA") == 0 && strcmp(equipamentos[i].prioridade, "MEDIA") != 0 && strcmp(equipamentos[i].prioridade, "ALTA") != 0) {
+                        equipamentoTemp = equipamentos[i];
+                        equipamentos[i] = equipamentos[j];
+                        equipamentos[j] = equipamentoTemp;
+                    }
+                }
+            }
+        }
+
         printDashboard(ocorrencias, nOcorrencias, operadores, nOperadores, equipamentos, nEquipamentos);
         input = scanfInput();
 
