@@ -690,6 +690,22 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
         }
     }while(localInput != 1 && localInput != 2 && localInput != 3 && localInput != 4);
 
+    do {
+        localInput = -1;
+        system("cls || clear");
+        printf("> Quantidade de Operações realizadas (só números positívos): ");
+        readInt(&localInput);
+        limpaBuffer();
+
+        if (localInput <= -1) {
+            printf("\nINPUT INVALIDO\n\n");
+            system("pause");
+        } else {
+            op.quantOp = localInput;
+        }
+
+    }while(localInput <= -1);
+
     printf("\n\nOperador cadastrado com sucesso!\n");
     pause();
 
