@@ -7,15 +7,13 @@
 #define MAXEQUIPAMENTOS 150
 #define MAXOPERADORES 50
 
-// ========== STRUCTS ==========
-
 typedef struct setores {
     char setor[5];
 } Setores;
 
 typedef struct equipamentos {
     char ID[4];
-    char tipo[17]; //AGV, braco-articulado, esteira, sorter, transelevador
+    char tipo[17];
     Setores setorAssociado;
     char estado[11];
     char IDo[5];
@@ -26,8 +24,8 @@ typedef struct operadores {
     char ID[5];
     char nome[71];
     Setores setorAssociado;
-    char nivelOp[14]; // BASICO, INTERMEDIARIO, SUPERVISOR
-    char estado[10]; // ATIVO, OCUPADO, INATIVO, BLOQUEADO
+    char nivelOp[14];
+    char estado[10];
     int quantOp;
 } Operadores;
 
@@ -37,7 +35,7 @@ typedef struct ocorrencias {
     char descricao[101];
 } Ocorrencias;
 
-// ========== FUNCOES ==========
+
 
 void limpaBuffer() {
     int c;
@@ -49,24 +47,14 @@ void pause() {
     limpaBuffer();
 }
 
-int scanfInput() {
-    int input;
 
-    printf("> ");
-    scanf("%i", &input);
-    limpaBuffer();
-
-    return input;
-}
-
-//leia o input do usuario
 void readString(char s[], int size) {
     fgets(s, size, stdin);
     limpaBuffer();
     s[strcspn(s,"\n")] = '\0';
 }
 
-//leia um valor inteiro do usuario
+
 void readInt(int *num) {
     scanf("%d", num);
     limpaBuffer();
@@ -81,7 +69,7 @@ void printEquipamento(Equipamentos equipamento) {
     printf("\nPrioridade: %s", equipamento.prioridade);
 }
 
-//verifica se o caracter eh um numero
+
 int isNumber(char c) {
     if (c >= 0x30 && c <= 0x39) {
         return 1;
@@ -90,7 +78,7 @@ int isNumber(char c) {
     return 0;
 }
 
-//verifica se o caracter eh uma letra
+
 int isLetter(char c) {
     if (toupper(c) >= 0x41 && toupper(c) <= 0x5A) {
         return 1;
@@ -98,13 +86,13 @@ int isLetter(char c) {
     return 0;
 }
 
-//verifica o input (se o input foi valido), funciona para strings numericos, strings de 1 letra e 2 digitos, e strings de 2 letras e 2 digitos
+
 int verificar(char s[], int size, int numOnly) {
     int i, success = 0;
 
-    size--; //tira o '\0' do tamanho total
+    size--;
 
-    //se estiver na primeira metade, verifica se eh letra, se não, verifica se eh numero
+
     for (i = 0; i < strlen(s); i++) {
         if (i <= (size / 2) - 1 && !numOnly) {
             if (isLetter(s[i])) {
@@ -117,12 +105,12 @@ int verificar(char s[], int size, int numOnly) {
         }
     }
 
-    //se tem a quantidade certa de letras e numeros, a funcao eh verdadeira
+
     if (success == size) {
         return 1;
     }
 
-    //se nao, a funcao eh falsa
+
     return 0;
 }
 
@@ -195,7 +183,7 @@ void sortOperadoresPorNivel(Operadores operadores[], int indices[], int tamanho)
     }
 }
 
-// DASHBOARD
+
 void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
     system("cls || clear");
     printf("+------------------------------------------------------------------------------+\n");
@@ -340,7 +328,7 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
     }
 
     for (i = 0; i < maxLinhas; i++) {
-        // OCORRENCIAS
+
         printf("| ");
         if (i < nOcorrenciaLines) {
             printf("%-23s", ocorrenciaLines[i]);
@@ -349,7 +337,7 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
         }
         printf(" ");
 
-        // OPERADORES ATIVOS
+
         printf("| ");
         if (i < operadoresVisiveis) {
             k = operadoresAtivos[i];
@@ -373,7 +361,7 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
         }
         printf(" ");
 
-        // EQUIPAMENTOS ATIVOS
+
         printf("| ");
         if (i < nEquipamentos) {
             printf("%s - %s", equipamentos[i].ID, equipamentos[i].estado);
@@ -406,15 +394,15 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
     Equipamentos equipamento, equipamentoTemp;
     int input;
 
-    //pega  guarda o ID do usuario
+
     do {
-        //le um string
+
         system("cls || clear");
         printf("Cadastro de equipamento:\n\n");
         printf("> ID do equipamento (1 Letra, 2 Dígitos): ");
         readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
-        //verifica se for valido
+
         if (verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0)) {
             if (verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamentos)) {
                 strcpy(equipamento.ID, equipamentoTemp.ID);
@@ -428,9 +416,9 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         }
     } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0) || !verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamentos));
 
-    //pega e guarda o tipo de equipamento
+
     do {
-        //le numero inteiro
+
         input = 0;
 
         system("cls || clear");
@@ -442,7 +430,7 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         printf("5. TRANSELEVADOR\n\t\n> Categoria: ");
         readInt(&input);
 
-        //verifica se eh valido
+
         switch(input) {
             case 1:
                 strcpy(equipamento.tipo, "AGV");
@@ -466,14 +454,14 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         }
     } while (input < 1 || input > 5);
 
-    //pega e guarda o setor
+
     do {
-        //le string
+
         system("cls || clear");
         printf("> Setor (2 Letras, 2 Dígitos): ");
         readString(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor));
 
-        //verifica se eh valido
+
         if (verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0)) {
             strcpy(equipamento.setorAssociado.setor, equipamentoTemp.setorAssociado.setor);
         } else {
@@ -482,9 +470,9 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         }
     } while (!verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0));
 
-    //pega e guarda o estado
+
     do {
-        //le numero inteiro
+
         input = 0;
 
         system("cls || clear");
@@ -494,7 +482,7 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         printf("3: Manutenção\n\n> ");
         readInt(&input);
 
-        //verifica o numero
+
         switch(input) {
             case 1:
                 strcpy(equipamento.estado, "ATIVO");
@@ -512,14 +500,14 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         }
     } while (input < 1 || input > 3);
 
-    //pega e guarda o ID do operador
+
     do {
-        //le string
+
         system("cls || clear");
         printf("> ID do Operador Associado (4 Dígitos): ");
         readString(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo));
 
-        //verifica se eh valido
+
         if (verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo), 1)) {
             strcpy(equipamento.IDo, equipamentoTemp.IDo);
         } else {
@@ -528,16 +516,16 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         }
     } while (!verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo), 1));
 
-    //pega e guarda a prioridade
+
     do {
-        //le numero inteiro
+
         input = 0;
 
         system("cls || clear");
         printf("> Nível de Prioridade (1. BAIXA, 2. MEDIA, 3. ALTA): ");
         readInt(&input);
 
-        //verifica se eh valido
+
         switch(input) {
             case 1:
                 strcpy(equipamento.prioridade, "BAIXA");
@@ -638,12 +626,10 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
     } while (!verificar(op.setorAssociado.setor, sizeof(op.setorAssociado.setor), 0));
 
     do {
+        localInput = 0;
         system("cls || clear");
         printf("> Nível Operacional (1. BASICO, 2. INTERMEDIARIO, 3. SUPERVISOR): ");
-        if (scanf("%i", &localInput) != 1) {
-            localInput = 0;
-        }
-        limpaBuffer();
+        readInt(&localInput);
 
         switch (localInput){
             case 1:
@@ -664,12 +650,10 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
 
 
     do {
+        localInput = 0;
         system("cls || clear");
         printf("> Estado Operacional Atual (1. ATIVO, 2. OCUPADO, 3. INATIVO, 4. BLOQUEADO): ");
-        if (scanf("%i", &localInput) != 1) {
-            localInput = 0;
-        }
-        limpaBuffer();
+        readInt(&localInput);
 
         switch (localInput){
             case 1:
@@ -712,7 +696,7 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
     return op;
 }
 
-// ATUALIZAR DADOS DO SISTEMA
+
 void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores operadores[], int *nOperadores, Ocorrencias ocorrencias[], int *nOcorrencias, Equipamentos equipamentoTemp, Operadores operadorTemp, Ocorrencias ocorrenciaTemp) {
     int input = 0;
     int i, equipamentoEscolhido = -1, operadorEscolhido = -1, ocorrenciaEscolhida = -1;
@@ -747,7 +731,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                     } while (equipamentoEscolhido == -1);
 
                     do {
-                        //le numero inteiro
+
                         input = 0;
 
                         system("cls || clear");
@@ -757,7 +741,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         printf("3: Manutenção\n\n> ");
                         readInt(&input);
 
-                        //verifica o numero
+
                         switch(input) {
                             case 1:
                                 strcpy(equipamentos[equipamentoEscolhido].estado, "ATIVO");
@@ -803,7 +787,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                     } while (operadorEscolhido == -1);
 
                     do {
-                        //le numero inteiro
+
                         input = 0;
 
                         system("cls || clear");
@@ -814,7 +798,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         printf("4: Bloqueado\n\n> ");
                         readInt(&input);
 
-                        //verifica o numero
+
                         switch(input) {
                             case 1:
                                 strcpy(operadores[operadorEscolhido].estado, "ATIVO");
@@ -862,14 +846,13 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         }
                     } while (equipamentoEscolhido == -1);
 
-                    //pega e guarda o setor
+
                     do {
-                        //le string
+
                         system("cls || clear");
                         printf("Escreva o novo Setor Associado ao equipamento: ");
                         readString(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor));
 
-                        //verifica se eh valido
                         if (verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0)) {
                             strcpy(equipamentos[equipamentoEscolhido].setorAssociado.setor, equipamentoTemp.setorAssociado.setor);
                         } else {
@@ -1080,7 +1063,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
 
         switch (input) {
 
-            // ── 1. BUSCA POR NOME ──────────────────────────────
+
             case 1: {
                 encontrou = 0;
 
@@ -1088,7 +1071,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 printf("Nome (ou parte do nome) do Operador: ");
                 readString(busca, sizeof(busca));
 
-                // converte busca para maiusculo para comparacao case-insensitive
+
                 for (i = 0; busca[i]; i++) busca[i] = toupper(busca[i]);
 
                 printf("\n%-6s %-71s %-5s %-14s %-10s %-5s\n",
@@ -1096,7 +1079,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 printf("------------------------------------------------------------------------\n");
 
                 for (i = 0; i < nOperadores; i++) {
-                    // copia nome em maiusculo para comparar
+
                     strcpy(nomeUpper, operadores[i].nome);
                     for (j = 0; nomeUpper[j]; j++) nomeUpper[j] = toupper(nomeUpper[j]);
 
@@ -1120,7 +1103,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 break;
             }
 
-            // ── 2. BUSCA POR ID ────────────────────────────────
+
             case 2: {
                 encontrou = 0;
 
@@ -1152,7 +1135,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 break;
             }
 
-            // ── 3. ESTADO DE UM EQUIPAMENTO ───────────────────
+
             case 3: {
                 encontrou = 0;
 
@@ -1184,7 +1167,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 break;
             }
 
-            // ── 4. OPERADORES LIVRES PARA UM SETOR/EQUIPAMENTO ─
+
             case 4: {
                 encontrou = 0;
                 nivelNecessario[0] = '\0';
@@ -1193,19 +1176,17 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 printf("Setor de interesse (2 letras + 2 digitos): ");
                 readString(buscaSetor, sizeof(buscaSetor));
 
-                // converte para maiusculo
+
                 for (i = 0; buscaSetor[i]; i++) buscaSetor[i] = toupper(buscaSetor[i]);
 
-                // verifica se o setor existe nos equipamentos e descobre a prioridade
+
                 printf("\nID do Equipamento para verificar prioridade (ou ENTER para ignorar): ");
                 readString(buscaEqID, sizeof(buscaEqID));
 
                 if (strlen(buscaEqID) > 0) {
                     for (i = 0; i < nEquipamentos; i++) {
                         if (strcmp(equipamentos[i].ID, buscaEqID) == 0) {
-                            // equipamento de prioridade ALTA exige nivel SUPERVISOR ou INTERMEDIARIO
-                            // equipamento de prioridade MEDIA exige INTERMEDIARIO ou SUPERVISOR
-                            // equipamento de prioridade BAIXA aceita qualquer nivel
+
                             if (strcmp(equipamentos[i].prioridade, "ALTA") == 0) {
                                 strcpy(nivelNecessario, "SUPERVISOR");
                                 printf("\nEquipamento de prioridade ALTA — necessario nivel SUPERVISOR.\n");
@@ -1228,11 +1209,11 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                     strcpy(setorUpper, operadores[i].setorAssociado.setor);
                     for (j = 0; setorUpper[j]; j++) setorUpper[j] = toupper(setorUpper[j]);
 
-                    // operador deve estar ATIVO e no setor correto
+
                     if (strcmp(operadores[i].estado, "ATIVO") != 0) continue;
                     if (strcmp(setorUpper, buscaSetor) != 0) continue;
 
-                    // filtra por nivel se ha exigencia
+
                     if (strlen(nivelNecessario) > 0) {
                         if (strcmp(nivelNecessario, "SUPERVISOR") == 0) {
                             if (strcmp(operadores[i].nivelOp, "SUPERVISOR") != 0) continue;
@@ -1283,8 +1264,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
     printf("\n3 --> Informações dos equipamentos de um setor específico");
     printf("\n4 --> Informações do setor");
     printf("\n5 --> Operador de cada setor com maior número de atividades realizadas\n> ");
-    scanf("%d", &list);
-    limpaBuffer();
+    readInt(&list);
 
     switch (list) {
         case 1:
@@ -1304,8 +1284,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
         case 2:
             system("cls || clear");
             printf("Digite o setor desejado: ");
-            scanf("%4s", setorDet);
-            limpaBuffer();
+            readString(setorDet, sizeof(setorDet));
             for (i = 0; i < nOperadores; i++) {
                 if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
                     printf("\nID: %s", operadores[i].ID);
@@ -1319,7 +1298,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
         case 3:
             system("cls || clear");
             printf("Digite o setor desejado: ");
-            scanf("%4s", setorDet);
+            readString(setorDet, sizeof(setorDet));
             limpaBuffer();
             for (h = 0; h < nEquipamentos; h++) {
                 if (strcmp(equipamentos[h].setorAssociado.setor, setorDet) == 0) {
@@ -1334,7 +1313,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
         case 4:
             system("cls || clear");
             printf("Digite o setor desejado: ");
-            scanf("%4s", setorDet);
+            readString(setorDet, sizeof(setorDet));
             limpaBuffer();
             for (i = 0; i < nOperadores; i++) {
                 if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
@@ -1348,7 +1327,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
         case 5:
             system("cls || clear");
             printf("Digite o setor desejado: ");
-            scanf("%4s", setorDet);
+            readString(setorDet, sizeof(setorDet));
             limpaBuffer();
             melhorIndice = -1;
             maior = -1;
@@ -1373,7 +1352,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
     }
 }
 
-// ========== MAIN ==========
+
 int main() {
     int input, shutdown = 0, i, j;
     int nOperadores = 0, nEquipamentos = 0, nOcorrencias = 0;
@@ -1384,8 +1363,8 @@ int main() {
     setlocale(LC_ALL, "portuguese");
 
     while(!shutdown){
+        input = 0;
 
-        //reorganiza os Equipamentos em base a prioridade
         if (nEquipamentos > 0) {
             for (i = 0; i < nEquipamentos; i++) {
                 for (j = nEquipamentos - 1; j > i; j--) {
@@ -1409,7 +1388,7 @@ int main() {
         }
 
         printDashboard(ocorrencias, nOcorrencias, operadores, nOperadores, equipamentos, nEquipamentos);
-        input = scanfInput();
+        readInt(&input);
 
         switch(input){
             case 1:
