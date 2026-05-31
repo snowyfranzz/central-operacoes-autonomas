@@ -966,6 +966,10 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                         operadores[i] = operadores[i + 1];
                                     }
                                     (*nOperadores)--;
+
+                                    system("cls");
+                                    printf("Operador Removido com Sucesso!\n\n");
+                                    system("pause");
                                 }
                             } else {
                                 printf("\nNão existem operadores ainda\n\n");
@@ -998,6 +1002,10 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                         equipamentos[i] = equipamentos[i + 1];
                                     }
                                     (*nEquipamentos)--;
+
+                                    system("cls");
+                                    printf("Equipamento Removido com Sucesso!\n\n");
+                                    system("pause");
                                 }
                             } else {
                                 printf("\nNão existem equipamentos ainda\n\n");
