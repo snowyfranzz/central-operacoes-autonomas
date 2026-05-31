@@ -905,9 +905,10 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 }
 
 void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
-    int input = 0;
+    int input;
 
     do {
+        input = 0;
         system("cls || clear");
         printf("+--------------------------------------------------+\n");
         printf("|           Consulta de Registros                  |\n");
