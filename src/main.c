@@ -1239,6 +1239,111 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
     } while (input != 5);
 }
 
+void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
+    int list = 0;
+    int i = 0;
+    int h = 0;
+    char setorDet[5] = "";
+    int melhorIndice = -1;
+    int maior = -1;
+
+    system("cls || clear");
+    printf("\nQual relatório operacional você quer checar?");
+    printf("\n1 --> Todos os operadores");
+    printf("\n2 --> Informações dos operadores de um setor específico");
+    printf("\n3 --> Informações dos equipamentos de um setor específico");
+    printf("\n4 --> Informações do setor");
+    printf("\n5 --> Operador de cada setor com maior número de atividades realizadas\n> ");
+    scanf("%d", &list);
+    limpaBuffer();
+
+    switch (list) {
+        case 1:
+            system("cls || clear");
+            printf("Quantidade de operadores: %d\n", nOperadores);
+            for (i = 0; i < nOperadores; i++) {
+                printf("\nID: %s", operadores[i].ID);
+                printf("\nNome: %s", operadores[i].nome);
+                printf("\nSetor: %s", operadores[i].setorAssociado.setor);
+                printf("\nNível Operacional: %s", operadores[i].nivelOp);
+                printf("\nStatus: %s", operadores[i].estado);
+                printf("\nQuantidade de operações: %d\n", operadores[i].quantOp);
+            }
+            pause();
+            break;
+
+        case 2:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            for (i = 0; i < nOperadores; i++) {
+                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
+                    printf("\nID: %s", operadores[i].ID);
+                    printf("\nNome: %s", operadores[i].nome);
+                    printf("\nStatus: %s\n", operadores[i].estado);
+                }
+            }
+            pause();
+            break;
+
+        case 3:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            for (h = 0; h < nEquipamentos; h++) {
+                if (strcmp(equipamentos[h].setorAssociado.setor, setorDet) == 0) {
+                    printf("\nID: %s", equipamentos[h].ID);
+                    printf("\nTipo: %s", equipamentos[h].tipo);
+                    printf("\nEstado Operacional: %s\n", equipamentos[h].estado);
+                }
+            }
+            pause();
+            break;
+
+        case 4:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            for (i = 0; i < nOperadores; i++) {
+                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
+                    printf("\nID: %s", operadores[i].ID);
+                    printf("\nNome: %s\n", operadores[i].nome);
+                }
+            }
+            pause();
+            break;
+
+        case 5:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            melhorIndice = -1;
+            maior = -1;
+            for (i = 0; i < nOperadores; i++) {
+                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0 && operadores[i].quantOp > maior) {
+                    maior = operadores[i].quantOp;
+                    melhorIndice = i;
+                }
+            }
+            if (melhorIndice >= 0) {
+                printf("\nO operador com mais operacoes do setor %s e %s\n", setorDet, operadores[melhorIndice].ID);
+            } else {
+                printf("\nNenhum operador encontrado no setor %s.\n", setorDet);
+            }
+            pause();
+            break;
+
+        default:
+            printf("\nOpcao invalida!\n");
+            pause();
+            break;
+    }
+}
+
 // ========== MAIN ==========
 int main() {
     int input, shutdown = 0, i, j;
@@ -1310,7 +1415,7 @@ int main() {
                 break;
 
             case 5:
-                //relatoriosOp();
+                relatoriosOp(operadores, nOperadores, equipamentos, nEquipamentos);
                 break;
 
             case 6:
