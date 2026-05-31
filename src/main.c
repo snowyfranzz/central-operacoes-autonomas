@@ -386,7 +386,6 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
     return equipamento;
 }
 
-// CADASTRO DE OPERADOR
 Ocorrencias registrarOcorrencia(Ocorrencias ocorrencias[], int nOcorrencias){
     Ocorrencias ocorrencia;
     int localInput = 0;
@@ -530,9 +529,9 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
 int main() {
     Equipamentos equipamentos[MAXEQUIPAMENTOS], equipamentoTemp;
     Operadores operadores[MAXOPERADORES], operadorTemp;
-    Ocorrencias ocorrencias[MAXEQUIPAMENTOS];
+    Ocorrencias ocorrencias[MAXEQUIPAMENTOS], ocorrenciaTemp;
 
-    int nEquipamentos = 0, nOperadores = 0, nOcorrencias= 0, equipamentoEscolhido = -1, operadorEscolhido = -1;
+    int nEquipamentos = 0, nOperadores = 0, nOcorrencias= 0, equipamentoEscolhido = -1, operadorEscolhido = -1, ocorrenciaEscolhida = -1;
     int input, shutdown = 0, i;
 
     setlocale(LC_ALL, "portuguese");
@@ -732,14 +731,66 @@ int main() {
                             }
                             break;
                         case 4:
-                            if (nOcorrencias < MAXEQUIPAMENTOS){
-                                ocorrencias[nOcorrencias] = registrarOcorrencia(ocorrencias, nOcorrencias);
-                                nOcorrencias++;
-                            } else {
-                                printf("ERRO: O número máximo de ocorrencias (%2d) já foi registrado!", MAXEQUIPAMENTOS);
-                                pause();
-                                system("cls || clear");
-                            }
+                            do {
+                                input = 0;
+                                system("cls");
+
+                                printf("Escolha:\n\n");
+                                printf("\t1: Registrar Ocorrencia\n");
+                                printf("\t2: Remover Ocorrencia\n");
+                                printf("\t3: Voltar\n\n> ");
+                                readInt(&input);
+
+                                switch(input) {
+                                    case 1:
+                                        if (nOcorrencias < MAXEQUIPAMENTOS){
+                                            ocorrencias[nOcorrencias] = registrarOcorrencia(ocorrencias, nOcorrencias);
+                                            nOcorrencias++;
+                                        } else {
+                                            printf("ERRO: O número máximo de ocorrencias (%2d) já foi registrado!", MAXEQUIPAMENTOS);
+                                            pause();
+                                            system("cls || clear");
+                                        }
+                                        break;
+                                    case 2:
+                                        if (nOcorrencias > 0) {
+                                            system("cls");
+
+                                            ocorrenciaEscolhida = -1;
+
+                                            printf("Escreva o ID da ocorrencia que você quer tirar do registro: ");
+                                            readString(ocorrenciaTemp.ID, sizeof(ocorrenciaTemp.ID));
+
+                                            for (i = 0; i < nOcorrencias; i++) {
+                                                if (strcmp(ocorrencias[i].ID, ocorrenciaTemp.ID) == 0) {
+                                                    ocorrenciaEscolhida = i;
+                                                    break;
+                                                }
+
+                                                if (i + 1 == nOcorrencias) {
+                                                    printf("\nID NAO ENCONTRADO\n\n");
+                                                    system("pause");
+                                                }
+                                            }
+
+                                            if (ocorrenciaEscolhida != -1) {
+                                                for (i = ocorrenciaEscolhida; i < nOcorrencias; i++) {
+                                                    ocorrencias[i] = ocorrencias[i + 1];
+                                                }
+                                                nOcorrencias--;
+                                            }
+                                        } else {
+                                            printf("\nNão existem ocorrencias ainda\n\n");
+                                            system("pause");
+                                        }
+                                        break;
+                                    case 3:
+                                        break;
+                                    default:
+                                        printf("\nINPUT INVALIDO\n\n");
+                                        system("pause");
+                                }
+                            } while (input != 3);
                             break;
                         case 5:
                             do {
@@ -755,31 +806,31 @@ int main() {
                                 switch(input) {
                                     case 1:
                                         if (nOperadores > 0) {
-                                            do {
-                                                system("cls");
+                                            system("cls");
 
-                                                operadorEscolhido = -1;
+                                            operadorEscolhido = -1;
 
-                                                printf("Escreva o ID do operador que você quer tirar do registro: ");
-                                                readString(operadorTemp.ID, sizeof(operadorTemp.ID));
+                                            printf("Escreva o ID do operador que você quer tirar do registro: ");
+                                            readString(operadorTemp.ID, sizeof(operadorTemp.ID));
 
-                                                for (i = 0; i < nOperadores; i++) {
-                                                    if (strcmp(operadores[i].ID, operadorTemp.ID) == 0) {
-                                                        operadorEscolhido = i;
-                                                        break;
-                                                    }
-
-                                                    if (i + 1 == nOperadores) {
-                                                        printf("\nID NAO ENCONTRADO\n\n");
-                                                        system("pause");
-                                                    }
+                                            for (i = 0; i < nOperadores; i++) {
+                                                if (strcmp(operadores[i].ID, operadorTemp.ID) == 0) {
+                                                    operadorEscolhido = i;
+                                                    break;
                                                 }
-                                            } while (operadorEscolhido == -1);
 
-                                            for (i = operadorEscolhido; i < nOperadores; i++) {
-                                                operadores[i] = operadores[i + 1];
+                                                if (i + 1 == nOperadores) {
+                                                    printf("\nID NAO ENCONTRADO\n\n");
+                                                    system("pause");
+                                                }
                                             }
-                                            nOperadores--;
+
+                                            if (operadorEscolhido != -1) {
+                                                for (i = operadorEscolhido; i < nOperadores; i++) {
+                                                    operadores[i] = operadores[i + 1];
+                                                }
+                                                nOperadores--;
+                                            }
                                         } else {
                                             printf("\nNão existem operadores ainda\n\n");
                                             system("pause");
@@ -787,31 +838,31 @@ int main() {
                                         break;
                                     case 2:
                                         if (nEquipamentos > 0) {
-                                            do {
-                                                system("cls");
+                                            system("cls");
 
-                                                equipamentoEscolhido = -1;
+                                            equipamentoEscolhido = -1;
 
-                                                printf("Escreva o ID do equipamento que você quer tirar do registro: ");
-                                                readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
+                                            printf("Escreva o ID do equipamento que você quer tirar do registro: ");
+                                            readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
-                                                for (i = 0; i < nEquipamentos; i++) {
-                                                    if (strcmp(equipamentos[i].ID, equipamentoTemp.ID) == 0) {
-                                                        equipamentoEscolhido = i;
-                                                        break;
-                                                    }
-
-                                                    if (i + 1 == nEquipamentos) {
-                                                        printf("\nID NAO ENCONTRADO\n\n");
-                                                        system("pause");
-                                                    }
+                                            for (i = 0; i < nEquipamentos; i++) {
+                                                if (strcmp(equipamentos[i].ID, equipamentoTemp.ID) == 0) {
+                                                    equipamentoEscolhido = i;
+                                                    break;
                                                 }
-                                            } while (equipamentoEscolhido == -1);
 
-                                            for (i = equipamentoEscolhido; i < nEquipamentos; i++) {
-                                                equipamentos[i] = equipamentos[i + 1];
+                                                if (i + 1 == nEquipamentos) {
+                                                    printf("\nID NAO ENCONTRADO\n\n");
+                                                    system("pause");
+                                                }
                                             }
-                                            nEquipamentos--;
+
+                                            if (equipamentoEscolhido != -1) {
+                                                for (i = equipamentoEscolhido; i < nEquipamentos; i++) {
+                                                    equipamentos[i] = equipamentos[i + 1];
+                                                }
+                                                nEquipamentos--;
+                                            }
                                         } else {
                                             printf("\nNão existem equipamentos ainda\n\n");
                                             system("pause");
