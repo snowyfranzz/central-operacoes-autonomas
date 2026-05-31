@@ -176,12 +176,18 @@ int nivelOp(char nivel[]) {
 }
 
 void sortOperadoresPorNivel(Operadores operadores[], int indices[], int tamanho) {
-    for (int i = 0; i < tamanho - 1; i++) {
-        for (int j = i + 1; j < tamanho; j++) {
-            int rankA = nivelOp(operadores[indices[i]].nivelOp);
-            int rankB = nivelOp(operadores[indices[j]].nivelOp);
+    int i = 0;
+    int j = 0;
+    int rankA = 0;
+    int rankB = 0;
+    int temp = 0;
+
+    for (i = 0; i < tamanho - 1; i++) {
+        for (j = i + 1; j < tamanho; j++) {
+            rankA = nivelOp(operadores[indices[i]].nivelOp);
+            rankB = nivelOp(operadores[indices[j]].nivelOp);
             if (rankB > rankA || (rankA == rankB && strcmp(operadores[indices[i]].nome, operadores[indices[j]].nome) > 0)) {
-                int temp = indices[i];
+                temp = indices[i];
                 indices[i] = indices[j];
                 indices[j] = temp;
             }
@@ -200,8 +206,17 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
 
     int operadoresAtivos[MAXOPERADORES];
     int nOperadoresAtivos = 0;
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    int maxLinhas = 10;
+    int operadoresVisiveis = 0;
+    int operadoresExcesso = 0;
+    int espacoGasto = 0;
+    int espacoRestante = 0;
+    int digits = 0;
 
-    for (int i = 0; i < nOperadores; i++) {
+    for (i = 0; i < nOperadores; i++) {
         if (strcmp(operadores[i].estado, "ATIVO") == 0) {
             operadoresAtivos[nOperadoresAtivos++] = i;
         }
@@ -209,26 +224,126 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
 
     sortOperadoresPorNivel(operadores, operadoresAtivos, nOperadoresAtivos);
 
-    int maxLinhas = 10;
-    int operadoresVisiveis = nOperadoresAtivos;
-    int operadoresExcesso = 0;
+    operadoresVisiveis = nOperadoresAtivos;
+    operadoresExcesso = 0;
     if (nOperadoresAtivos > maxLinhas) {
         operadoresVisiveis = maxLinhas - 1;
         operadoresExcesso = nOperadoresAtivos - operadoresVisiveis;
     }
 
-    for (int i = 0; i < maxLinhas; i++) {
+    char ocorrenciaLines[10][24];
+    int nOcorrenciaLines = 0;
+    char textoLinha[24] = "";
+    char descricao[101] = "";
+    int lineLen = 0;
+    int lastSpace = -1;
+    int descPos = 0;
+    int ocorrenciasVisiveis = 0;
+    int ocorrenciasExcesso = 0;
+    int countLen = 0;
+    int temp = 0;
+    char countText[4];
+
+    for (k = nOcorrencias - 1; k >= 0 && nOcorrenciaLines < maxLinhas; k--) {
+        textoLinha[0] = '\0';
+        strcpy(textoLinha, ocorrencias[k].ID);
+        strcat(textoLinha, " - ");
+        strcat(textoLinha, ocorrencias[k].emissor);
+        textoLinha[23] = '\0';
+        strcpy(ocorrenciaLines[nOcorrenciaLines++], textoLinha);
+
+        strcpy(descricao, ocorrencias[k].descricao);
+        descPos = 0;
+
+        while (descricao[descPos] != '\0' && nOcorrenciaLines < maxLinhas) {
+            while (descricao[descPos] == ' ') {
+                descPos++;
+            }
+            if (descricao[descPos] == '\0') {
+                break;
+            }
+            lineLen = 0;
+            lastSpace = -1;
+            while (descricao[descPos + lineLen] != '\0' && lineLen < 23) {
+                if (descricao[descPos + lineLen] == ' ') {
+                    lastSpace = lineLen;
+                }
+                lineLen++;
+            }
+
+            if (descricao[descPos + lineLen] == '\0') {
+                for (j = 0; j < lineLen; j++) {
+                    textoLinha[j] = descricao[descPos + j];
+                }
+                textoLinha[lineLen] = '\0';
+                descPos += lineLen;
+            } else if (lastSpace > 0) {
+                for (j = 0; j < lastSpace; j++) {
+                    textoLinha[j] = descricao[descPos + j];
+                }
+                textoLinha[lastSpace] = '\0';
+                descPos += lastSpace;
+                while (descricao[descPos] == ' ') {
+                    descPos++;
+                }
+            } else {
+                for (j = 0; j < 23; j++) {
+                    textoLinha[j] = descricao[descPos + j];
+                }
+                textoLinha[23] = '\0';
+                descPos += 23;
+            }
+
+            strcpy(ocorrenciaLines[nOcorrenciaLines++], textoLinha);
+        }
+
+        ocorrenciasVisiveis++;
+    }
+
+    ocorrenciasExcesso = nOcorrencias - ocorrenciasVisiveis;
+    if (ocorrenciasExcesso > 0) {
+        countLen = 0;
+        temp = ocorrenciasExcesso;
+        while (temp > 0 && countLen < 3) {
+            countText[countLen++] = '0' + (temp % 10);
+            temp /= 10;
+        }
+        if (countLen == 0) {
+            countText[countLen++] = '0';
+        }
+        for (j = 0; j < countLen / 2; j++) {
+            char swap = countText[j];
+            countText[j] = countText[countLen - 1 - j];
+            countText[countLen - 1 - j] = swap;
+        }
+        countText[countLen] = '\0';
+
+        textoLinha[0] = '.';
+        textoLinha[1] = '.';
+        textoLinha[2] = '.';
+        textoLinha[3] = ' ';
+        textoLinha[4] = 'M';
+        textoLinha[5] = 'a';
+        textoLinha[6] = 'i';
+        textoLinha[7] = 's';
+        textoLinha[8] = ' ';
+        for (j = 0; j < countLen; j++) {
+            textoLinha[9 + j] = countText[j];
+        }
+        textoLinha[9 + countLen] = '\0';
+
+        if (nOcorrenciaLines < maxLinhas) {
+            strcpy(ocorrenciaLines[nOcorrenciaLines++], textoLinha);
+        } else {
+            strcpy(ocorrenciaLines[maxLinhas - 1], textoLinha);
+        }
+    }
+
+    for (i = 0; i < maxLinhas; i++) {
         // OCORRENCIAS
         printf("| ");
-        if (i < nOcorrencias) {
-            printf("%s - %s", ocorrencias[i].ID, ocorrencias[i].emissor);
-
-            int espacoGasto = strlen(ocorrencias[i].ID) + strlen(ocorrencias[i].emissor) + 3;
-            int espacoRestante = 23 - espacoGasto;
-
-            for (int j = 0; j < espacoRestante; j++) {
-                printf(" ");
-            }
+        if (i < nOcorrenciaLines) {
+            printf("%-23s", ocorrenciaLines[i]);
         } else {
             printf("%-23s", "");
         }
@@ -237,22 +352,20 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
         // OPERADORES ATIVOS
         printf("| ");
         if (i < operadoresVisiveis) {
-            int idx = operadoresAtivos[i];
-            printf("%s - %s", operadores[idx].ID, operadores[idx].nivelOp);
+            k = operadoresAtivos[i];
+            printf("%s - %s", operadores[k].ID, operadores[k].nivelOp);
 
-            int espacoGasto = strlen(operadores[idx].ID) + strlen(operadores[idx].nivelOp) + 3;
-            int espacoRestante = 24 - espacoGasto;
-            for (int j = 0; j < espacoRestante; j++) {
+            espacoGasto = strlen(operadores[k].ID) + strlen(operadores[k].nivelOp) + 3;
+            espacoRestante = 24 - espacoGasto;
+            for (j = 0; j < espacoRestante; j++) {
                 printf(" ");
             }
         } else if (operadoresExcesso > 0 && i == operadoresVisiveis) {
-            char overflowTexto[25];
-            snprintf(overflowTexto, sizeof(overflowTexto), "... Mais %d", operadoresExcesso);
-            printf("%s", overflowTexto);
-
-            int espacoGasto = strlen(overflowTexto);
-            int espacoRestante = 24 - espacoGasto;
-            for (int j = 0; j < espacoRestante; j++) {
+            printf("... Mais %d", operadoresExcesso);
+            digits = operadoresExcesso < 10 ? 1 : operadoresExcesso < 100 ? 2 : 3;
+            espacoGasto = 9 + digits;
+            espacoRestante = 24 - espacoGasto;
+            for (j = 0; j < espacoRestante; j++) {
                 printf(" ");
             }
         } else {
@@ -265,10 +378,10 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
         if (i < nEquipamentos) {
             printf("%s - %s", equipamentos[i].ID, equipamentos[i].estado);
 
-            int espacoGasto = strlen(equipamentos[i].ID) + strlen(equipamentos[i].estado) + 3;
-            int espacoRestante = 23 - espacoGasto;
+            espacoGasto = strlen(equipamentos[i].ID) + strlen(equipamentos[i].estado) + 3;
+            espacoRestante = 23 - espacoGasto;
 
-            for (int j = 0; j < espacoRestante; j++) {
+            for (j = 0; j < espacoRestante; j++) {
                 printf(" ");
             }
         } else {
@@ -909,10 +1022,20 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 }
 
 void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
-    int input;
+    int input = 0;
+    int encontrou = 0;
+    int i = 0;
+    int j = 0;
+    char busca[71] = "";
+    char buscaID[5] = "";
+    char buscaEq[4] = "";
+    char buscaSetor[5] = "";
+    char buscaEqID[4] = "";
+    char nomeUpper[71] = "";
+    char setorUpper[5] = "";
+    char nivelNecessario[14] = "";
 
     do {
-        input = 0;
         system("cls || clear");
         printf("+--------------------------------------------------+\n");
         printf("|           Consulta de Registros                  |\n");
@@ -930,8 +1053,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
 
             // ── 1. BUSCA POR NOME ──────────────────────────────
             case 1: {
-                char busca[71];
-                int encontrou = 0, i;
+                encontrou = 0;
 
                 system("cls || clear");
                 printf("Nome (ou parte do nome) do Operador: ");
@@ -946,8 +1068,6 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
 
                 for (i = 0; i < nOperadores; i++) {
                     // copia nome em maiusculo para comparar
-                    char nomeUpper[71];
-                    int j;
                     strcpy(nomeUpper, operadores[i].nome);
                     for (j = 0; nomeUpper[j]; j++) nomeUpper[j] = toupper(nomeUpper[j]);
 
@@ -973,8 +1093,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
 
             // ── 2. BUSCA POR ID ────────────────────────────────
             case 2: {
-                char buscaID[5];
-                int encontrou = 0, i;
+                encontrou = 0;
 
                 system("cls || clear");
                 printf("ID do Operador (4 digitos): ");
@@ -1006,8 +1125,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
 
             // ── 3. ESTADO DE UM EQUIPAMENTO ───────────────────
             case 3: {
-                char buscaEq[4];
-                int encontrou = 0, i;
+                encontrou = 0;
 
                 system("cls || clear");
                 printf("ID do Equipamento (1 letra + 2 digitos): ");
@@ -1039,10 +1157,8 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
 
             // ── 4. OPERADORES LIVRES PARA UM SETOR/EQUIPAMENTO ─
             case 4: {
-                char buscaSetor[5];
-                char buscaEqID[4];
-                int encontrou = 0, i;
-                char nivelNecessario[14] = "";
+                encontrou = 0;
+                nivelNecessario[0] = '\0';
 
                 system("cls || clear");
                 printf("Setor de interesse (2 letras + 2 digitos): ");
@@ -1080,8 +1196,6 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 printf("------------------------------------------------------------\n");
 
                 for (i = 0; i < nOperadores; i++) {
-                    char setorUpper[5];
-                    int j;
                     strcpy(setorUpper, operadores[i].setorAssociado.setor);
                     for (j = 0; setorUpper[j]; j++) setorUpper[j] = toupper(setorUpper[j]);
 
@@ -1123,6 +1237,111 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
         }
 
     } while (input != 5);
+}
+
+void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipamentos[], int nEquipamentos) {
+    int list = 0;
+    int i = 0;
+    int h = 0;
+    char setorDet[5] = "";
+    int melhorIndice = -1;
+    int maior = -1;
+
+    system("cls || clear");
+    printf("\nQual relatório operacional você quer checar?");
+    printf("\n1 --> Todos os operadores");
+    printf("\n2 --> Informações dos operadores de um setor específico");
+    printf("\n3 --> Informações dos equipamentos de um setor específico");
+    printf("\n4 --> Informações do setor");
+    printf("\n5 --> Operador de cada setor com maior número de atividades realizadas\n> ");
+    scanf("%d", &list);
+    limpaBuffer();
+
+    switch (list) {
+        case 1:
+            system("cls || clear");
+            printf("Quantidade de operadores: %d\n", nOperadores);
+            for (i = 0; i < nOperadores; i++) {
+                printf("\nID: %s", operadores[i].ID);
+                printf("\nNome: %s", operadores[i].nome);
+                printf("\nSetor: %s", operadores[i].setorAssociado.setor);
+                printf("\nNível Operacional: %s", operadores[i].nivelOp);
+                printf("\nStatus: %s", operadores[i].estado);
+                printf("\nQuantidade de operações: %d\n", operadores[i].quantOp);
+            }
+            pause();
+            break;
+
+        case 2:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            for (i = 0; i < nOperadores; i++) {
+                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
+                    printf("\nID: %s", operadores[i].ID);
+                    printf("\nNome: %s", operadores[i].nome);
+                    printf("\nStatus: %s\n", operadores[i].estado);
+                }
+            }
+            pause();
+            break;
+
+        case 3:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            for (h = 0; h < nEquipamentos; h++) {
+                if (strcmp(equipamentos[h].setorAssociado.setor, setorDet) == 0) {
+                    printf("\nID: %s", equipamentos[h].ID);
+                    printf("\nTipo: %s", equipamentos[h].tipo);
+                    printf("\nEstado Operacional: %s\n", equipamentos[h].estado);
+                }
+            }
+            pause();
+            break;
+
+        case 4:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            for (i = 0; i < nOperadores; i++) {
+                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
+                    printf("\nID: %s", operadores[i].ID);
+                    printf("\nNome: %s\n", operadores[i].nome);
+                }
+            }
+            pause();
+            break;
+
+        case 5:
+            system("cls || clear");
+            printf("Digite o setor desejado: ");
+            scanf("%4s", setorDet);
+            limpaBuffer();
+            melhorIndice = -1;
+            maior = -1;
+            for (i = 0; i < nOperadores; i++) {
+                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0 && operadores[i].quantOp > maior) {
+                    maior = operadores[i].quantOp;
+                    melhorIndice = i;
+                }
+            }
+            if (melhorIndice >= 0) {
+                printf("\nO operador com mais operacoes do setor %s e %s\n", setorDet, operadores[melhorIndice].ID);
+            } else {
+                printf("\nNenhum operador encontrado no setor %s.\n", setorDet);
+            }
+            pause();
+            break;
+
+        default:
+            printf("\nOpcao invalida!\n");
+            pause();
+            break;
+    }
 }
 
 // ========== MAIN ==========
@@ -1196,138 +1415,7 @@ int main() {
                 break;
 
             case 5:
-                //relatoriosOp();
-
-
-            system ("cls");
-            printf("\nQual relatório operacional você quer checar?");
-            printf("\n1 --> Todos os operadores");
-            printf("\n2 --> Informações dos operadores de um setor específico");
-            printf("\n3 --> Informações dos equipamentos de um setor específico");
-            printf("\n4 --> Informações do setor");
-            printf("\n5 --> Operador de cada setor com maior número de atividades realizadas\n>");
-            int list;
-            int i=0;
-            int h=0;
-            char setorDet[4];
-            char equipamentoDet[4];
-
-
-            scanf("%d",&list);
-        switch(list)
-        {
-        case 1:
-            system("cls");
-            printf("Quantidade de operadores: %d",nOperadores);
-           for (i=0; i < nOperadores; i++)
-           {
-               printf("\nID: %s",operadores[i].ID);
-               getchar();
-               printf("\nNome: %s",operadores[i].nome);
-               getchar();
-               printf("\nSetor: %s",operadores[i].setorAssociado);
-               getchar();
-               printf("\nNível Operacional: %s", operadores[i].nivelOp);
-               getchar();
-               printf("\nStatus: %s", operadores[i].estado);
-               getchar();
-               printf("\nQuantidade de operações: %s", operadores[i].quantOp);
-               getchar();
-           }
-           i=0;
-
-            break;
-
-        case 2:
-
-            system("cls");
-            printf("Digite o setor desejado: ");
-            scanf("%s",&setorDet);
-        for (i=0; i < nOperadores; i++)
-        {
-            if (strcmp(operadores[i].setorAssociado, setorDet) == 0)
-
-            {
-               printf("\nID: %s",operadores[i].ID);
-               getchar();
-               printf("\nNome: %s",operadores[i].nome);
-               getchar();
-               printf("\nStatus: %s", operadores[i].estado);
-               getchar();
-            }
-        }
-            system ("cls");
-
-            i=0;
-
-            break;
-        case 3:
-
-        system("cls");
-        printf("Digite o setor desejado: ");
-        scanf("%s",&setorDet);
-        for (h=0; h < nEquipamentos; h++)
-        {
-            if (strcmp(equipamentos[h].setorAssociado, setorDet) == 0)
-
-            {
-               printf("\nID: %s",equipamentos[h].ID);
-               getchar();
-               printf("\nTipo: %s",equipamentos[h].tipo);
-               getchar();
-                printf("\nEstado Operacional: %s",equipamentos[h].estado);
-                getchar();
-            }
-        }
-            system ("cls");
-            h=0;
-
-            break;
-        case 4:
-            system ("cls");
-            printf("Digite o setor desejado: ");
-            scanf("%s",&setorDet);
-
-
-             for (i = 0; i < nOperadores; i++)
-               {
-                   if (strcmp(equipamentos[h].setorAssociado, setorDet) == 0)
-                   {
-                       printf("\nID: %s",operadores[i].ID);
-                        getchar();
-                        printf("\nNome: %s",operadores[i].nome);
-                        getchar();
-                        printf("\nEquipamento: %d",equipamentoEscolhido);
-                        getchar();
-                   }
-
-               }
-               system ("cls");
-               h=0;
-               i=0;
-
-               break;
-
-        case 5:
-            system("cls");
-
-        for(i = 0; i < nOperadores; i++)
-    {
-        if(operadores[i].quantOp > maior)
-        {
-            printf("O operador com mais operacoes do setor %s e %s",setorDet,operadores[i].ID);
-            getchar;
-        }
-    }
-            system("cls");
-            i=0;
-            h=0;
-            break;
-        }
-
-
-
-
+                relatoriosOp(operadores, nOperadores, equipamentos, nEquipamentos);
                 break;
 
             case 6:
