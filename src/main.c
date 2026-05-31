@@ -9,10 +9,14 @@
 
 // ========== STRUCTS ==========
 
+typedef struct setores {
+    char setor[5];
+} Setores;
+
 typedef struct equipamentos {
     char ID[4];
     char tipo[17]; //AGV, braco-articulado, esteira, sorter, transelevador
-    char setorAssociado[5];
+    Setores setorAssociado;
     char estado[11];
     char IDo[5];
     char prioridade[6];
@@ -21,7 +25,7 @@ typedef struct equipamentos {
 typedef struct operadores {
     char ID[5];
     char nome[71];
-    char setorAssociado[5];
+    Setores setorAssociado;
     char nivelOp[14]; // BASICO, INTERMEDIARIO, SUPERVISOR
     char estado[10]; // ATIVO, OCUPADO, INATIVO, BLOQUEADO
     int quantOp;
@@ -71,7 +75,7 @@ void readInt(int *num) {
 void printEquipamento(Equipamentos equipamento) {
     printf("\nID: %s", equipamento.ID);
     printf("\nTipo: %s", equipamento.tipo);
-    printf("\nSetor Associado: %s", equipamento.setorAssociado);
+    printf("\nSetor Associado: %s", equipamento.setorAssociado.setor);
     printf("\nEstado Operacional: %s", equipamento.estado);
     printf("\nID do Operador: %s", equipamento.IDo);
     printf("\nPrioridade: %s", equipamento.prioridade);
@@ -354,16 +358,16 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         //le string
         system("cls || clear");
         printf("> Setor (2 Letras, 2 Dígitos): ");
-        readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
+        readString(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor));
 
         //verifica se eh valido
-        if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0)) {
-            strcpy(equipamento.setorAssociado, equipamentoTemp.setorAssociado);
+        if (verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0)) {
+            strcpy(equipamento.setorAssociado.setor, equipamentoTemp.setorAssociado.setor);
         } else {
             printf("\nSetor Inválido\n\n");
             pause();
         }
-    } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
+    } while (!verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0));
 
     //pega e guarda o estado
     do {
@@ -450,7 +454,7 @@ Ocorrencias registrarOcorrencia(Ocorrencias ocorrencias[], int nOcorrencias){
 
     printf("Cadastro de Ocorrencia:\n\n");
     do {
-        system("cls");
+        system("cls || clear");
 
         printf("> ID da Ocorrencia (4 Dígitos, outros serão desconsiderados):  ");
         readString(ocorrencia.ID, sizeof(ocorrencia.ID));
@@ -466,11 +470,11 @@ Ocorrencias registrarOcorrencia(Ocorrencias ocorrencias[], int nOcorrencias){
         }
     } while ((!verificar(ocorrencia.ID, sizeof(ocorrencia.ID), 1)) || (!verificaIdUnicoOcorrencia(ocorrencia.ID, ocorrencias, nOcorrencias)));
 
-    system("cls");
+    system("cls || clear");
     printf("> Primeiro Nome do Emissor (Máximo de 16 Caractéres): ");
     readString(ocorrencia.emissor, sizeof(ocorrencia.emissor));
 
-    system("cls");
+    system("cls || clear");
     printf("> Descrição da ocorrencia (Máximo de 100 caractéres): ");
     readString(ocorrencia.descricao, sizeof(ocorrencia.descricao));
 
@@ -489,7 +493,7 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
 
     printf("Cadastro de Operador:\n\n");
     do {
-        system("cls");
+        system("cls || clear");
 
         printf("> ID do Operador (4 Dígitos, outros serão desconsiderados):  ");
         readString(op.ID, sizeof(op.ID));
@@ -505,23 +509,23 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
         }
     } while ((!verificar(op.ID, sizeof(op.ID), 1)) || (!verificaIdUnicoOperador(op.ID, operadores, nOperadores)));
 
-    system("cls");
+    system("cls || clear");
     printf("> Nome do Operador (Máximo de 70 Caractéres): ");
     readString(op.nome, sizeof(op.nome));
 
     do {
-        system("cls");
+        system("cls || clear");
         printf("> Setor (2 Letras, 2 Dígitos - outros serão desconsiderados): ");
-        readString(op.setorAssociado, sizeof(op.setorAssociado));
+        readString(op.setorAssociado.setor, sizeof(op.setorAssociado.setor));
 
-        if (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0)) {
+        if (!verificar(op.setorAssociado.setor, sizeof(op.setorAssociado.setor), 0)) {
             printf("\nSetor Inválido!\n\n");
             pause();
         }
-    } while (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0));
+    } while (!verificar(op.setorAssociado.setor, sizeof(op.setorAssociado.setor), 0));
 
     do {
-        system("cls");
+        system("cls || clear");
         printf("> Nível Operacional (1. BASICO, 2. INTERMEDIARIO, 3. SUPERVISOR): ");
         if (scanf("%i", &localInput) != 1) {
             localInput = 0;
@@ -540,14 +544,14 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
                 break;
             default:
                 printf("ERRO. Você inseriu o número do nível que você quer? Tente novamente.\n");
-                system("pause");
+                pause();
         }
 
     }while(localInput != 1 && localInput != 2 && localInput != 3);
 
 
     do {
-        system("cls");
+        system("cls || clear");
         printf("> Estado Operacional Atual (1. ATIVO, 2. OCUPADO, 3. INATIVO, 4. BLOQUEADO): ");
         if (scanf("%i", &localInput) != 1) {
             localInput = 0;
@@ -569,7 +573,7 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
                 break;
             default:
                 printf("ERRO. Você inseriu o número do estado que você quer? Tente novamente.\n");
-                system("pause");
+                pause();
         }
     }while(localInput != 1 && localInput != 2 && localInput != 3 && localInput != 4);
 
@@ -585,7 +589,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
     int i, equipamentoEscolhido = -1, operadorEscolhido = -1, ocorrenciaEscolhida = -1;
 
     do {
-        system("cls");
+        system("cls || clear");
         input = 0;
         printf("Escolha o que atualizar:\n\n1: Estado Operacional de um Equipamento\n2: Disponibilidade de Operadores\n3: Setor de um Equipamento\n4: Registrar Ocorrencias\n5: Desativar Registros\n6: Voltar\n\n> ");
         readInt(&input);
@@ -593,7 +597,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
             case 1:
                 if (*nEquipamentos > 0) {
                     do {
-                        system("cls");
+                        system("cls || clear");
 
                         equipamentoEscolhido = -1;
 
@@ -608,7 +612,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                             if (i + 1 == *nEquipamentos) {
                                 printf("\nID INVALIDO\n\n");
-                                system("pause");
+                                pause();
                             }
                         }
                     } while (equipamentoEscolhido == -1);
@@ -617,7 +621,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         //le numero inteiro
                         input = 0;
 
-                        system("cls");
+                        system("cls || clear");
                         printf("Qual é o Novo Estado Operacional do equipamento? \n\n\t");
                         printf("1: Ativo\n\t");
                         printf("2: Inativo\n\t");
@@ -637,19 +641,19 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                 break;
                             default:
                                 printf("\nINPUT INVALIDO\n\n");
-                                system("pause");
+                                pause();
 
                         }
                     } while (input < 1 || input > 3);
                 } else {
                     printf("\nNão existem equipamentos ainda\n\n");
-                    system("pause");
+                    pause();
                 }
                 break;
             case 2:
                 if (*nOperadores > 0) {
                     do {
-                        system("cls");
+                        system("cls || clear");
 
                         operadorEscolhido = -1;
 
@@ -664,7 +668,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                             if (i + 1 == *nOperadores) {
                                 printf("\nID NAO ENCONTRADO\n\n");
-                                system("pause");
+                                pause();
                             }
                         }
                     } while (operadorEscolhido == -1);
@@ -673,7 +677,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         //le numero inteiro
                         input = 0;
 
-                        system("cls");
+                        system("cls || clear");
                         printf("Qual é o novo status do operador? \n\n\t");
                         printf("1: Ativo\n\t");
                         printf("2: Ocupado\n\t");
@@ -697,19 +701,19 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                 break;
                             default:
                                 printf("\nINPUT INVALIDO\n\n");
-                                system("pause");
+                                pause();
 
                         }
                     } while (input < 1 || input > 4);
                 } else {
                     printf("\nNão existem operadores ainda\n\n");
-                    system("pause");
+                    pause();
                 }
                 break;
             case 3:
                 if (*nEquipamentos > 0) {
                     do {
-                        system("cls");
+                        system("cls || clear");
 
                         equipamentoEscolhido = -1;
 
@@ -724,7 +728,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                             if (i + 1 == *nEquipamentos) {
                                 printf("\nID NAO ENCONTRADO\n\n");
-                                system("pause");
+                                pause();
                             }
                         }
                     } while (equipamentoEscolhido == -1);
@@ -732,27 +736,27 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                     //pega e guarda o setor
                     do {
                         //le string
-                        system("cls");
+                        system("cls || clear");
                         printf("Escreva o novo Setor Associado ao equipamento: ");
-                        readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
+                        readString(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor));
 
                         //verifica se eh valido
-                        if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0)) {
-                            strcpy(equipamentos[equipamentoEscolhido].setorAssociado, equipamentoTemp.setorAssociado);
+                        if (verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0)) {
+                            strcpy(equipamentos[equipamentoEscolhido].setorAssociado.setor, equipamentoTemp.setorAssociado.setor);
                         } else {
                             printf("\nSetor Inválido\n\n");
-                            system("pause");
+                            pause();
                         }
-                    } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
+                    } while (!verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0));
                 } else {
                     printf("\nNão existem equipamentos ainda\n\n");
-                    system("pause");
+                    pause();
                 }
                 break;
             case 4:
                 do {
                     input = 0;
-                    system("cls");
+                    system("cls || clear");
 
                     printf("Escolha:\n\n");
                     printf("\t1: Registrar Ocorrencia\n");
@@ -773,7 +777,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                             break;
                         case 2:
                             if (*nOcorrencias > 0) {
-                                system("cls");
+                                system("cls || clear");
 
                                 ocorrenciaEscolhida = -1;
 
@@ -788,7 +792,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                                     if (i + 1 == *nOcorrencias) {
                                         printf("\nID NAO ENCONTRADO\n\n");
-                                        system("pause");
+                                        pause();
                                     }
                                 }
 
@@ -800,20 +804,20 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                 }
                             } else {
                                 printf("\nNão existem ocorrencias ainda\n\n");
-                                system("pause");
+                                pause();
                             }
                             break;
                         case 3:
                             break;
                         default:
                             printf("\nINPUT INVALIDO\n\n");
-                            system("pause");
+                            pause();
                     }
                 } while (input != 3);
                 break;
             case 5:
                 do {
-                    system("cls");
+                    system("cls || clear");
                     input = 0;
 
                     printf("1: Desativar Operador\n");
@@ -825,7 +829,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                     switch(input) {
                         case 1:
                             if (*nOperadores > 0) {
-                                system("cls");
+                                system("cls || clear");
 
                                 operadorEscolhido = -1;
 
@@ -840,7 +844,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                                     if (i + 1 == *nOperadores) {
                                         printf("\nID NAO ENCONTRADO\n\n");
-                                        system("pause");
+                                        pause();
                                     }
                                 }
 
@@ -852,12 +856,12 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                 }
                             } else {
                                 printf("\nNão existem operadores ainda\n\n");
-                                system("pause");
+                                pause();
                             }
                             break;
                         case 2:
                             if (*nEquipamentos > 0) {
-                                system("cls");
+                                system("cls || clear");
 
                                 equipamentoEscolhido = -1;
 
@@ -872,7 +876,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                                     if (i + 1 == *nEquipamentos) {
                                         printf("\nID NAO ENCONTRADO\n\n");
-                                        system("pause");
+                                        pause();
                                     }
                                 }
 
@@ -884,14 +888,14 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                 }
                             } else {
                                 printf("\nNão existem equipamentos ainda\n\n");
-                                system("pause");
+                                pause();
                             }
                             break;
                         case 3:
                             break;
                         default:
                             printf("\nINPUT INVALIDO\n\n");
-                            system("pause");
+                            pause();
                     }
                 } while (input != 3);
                 break;
@@ -899,7 +903,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                 break;
             default:
                 printf("\nINVALIDO\n\n");
-                system("pause");
+                pause();
         }
     } while (input != 6);
 }
@@ -950,7 +954,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                         printf("%-6s %-71s %-5s %-14s %-10s %-5d\n",
                                operadores[i].ID,
                                operadores[i].nome,
-                               operadores[i].setorAssociado,
+                               operadores[i].setorAssociado.setor,
                                operadores[i].nivelOp,
                                operadores[i].estado,
                                operadores[i].quantOp);
@@ -982,7 +986,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                         printf("+------------------------------------------+\n");
                         printf("  ID         : %s\n", operadores[i].ID);
                         printf("  Nome       : %s\n", operadores[i].nome);
-                        printf("  Setor      : %s\n", operadores[i].setorAssociado);
+                        printf("  Setor      : %s\n", operadores[i].setorAssociado.setor);
                         printf("  Nivel      : %s\n", operadores[i].nivelOp);
                         printf("  Estado     : %s\n", operadores[i].estado);
                         printf("  Operacoes  : %d\n", operadores[i].quantOp);
@@ -1015,7 +1019,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                         printf("+------------------------------------------+\n");
                         printf("  ID              : %s\n", equipamentos[i].ID);
                         printf("  Tipo            : %s\n", equipamentos[i].tipo);
-                        printf("  Setor           : %s\n", equipamentos[i].setorAssociado);
+                        printf("  Setor           : %s\n", equipamentos[i].setorAssociado.setor);
                         printf("  Estado          : %s\n", equipamentos[i].estado);
                         printf("  Operador Assoc. : %s\n", equipamentos[i].IDo);
                         printf("  Prioridade      : %s\n", equipamentos[i].prioridade);
@@ -1077,7 +1081,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 for (i = 0; i < nOperadores; i++) {
                     char setorUpper[5];
                     int j;
-                    strcpy(setorUpper, operadores[i].setorAssociado);
+                    strcpy(setorUpper, operadores[i].setorAssociado.setor);
                     for (j = 0; setorUpper[j]; j++) setorUpper[j] = toupper(setorUpper[j]);
 
                     // operador deve estar ATIVO e no setor correto
