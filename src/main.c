@@ -7,14 +7,10 @@
 #define MAXEQUIPAMENTOS 150
 #define MAXOPERADORES 50
 
-typedef struct setores {
-    char setor[5];
-} Setores;
-
 typedef struct equipamentos {
     char ID[4];
     char tipo[17];
-    Setores setorAssociado;
+    char setorAssociado[5];
     char estado[11];
     char IDo[5];
     char prioridade[6];
@@ -23,7 +19,7 @@ typedef struct equipamentos {
 typedef struct operadores {
     char ID[5];
     char nome[71];
-    Setores setorAssociado;
+    char setorAssociado[5];
     char nivelOp[14];
     char estado[10];
     int quantOp;
@@ -63,7 +59,7 @@ void readInt(int *num) {
 void printEquipamento(Equipamentos equipamento) {
     printf("\nID: %s", equipamento.ID);
     printf("\nTipo: %s", equipamento.tipo);
-    printf("\nSetor Associado: %s", equipamento.setorAssociado.setor);
+    printf("\nSetor Associado: %s", equipamento.setorAssociado);
     printf("\nEstado Operacional: %s", equipamento.estado);
     printf("\nID do Operador: %s", equipamento.IDo);
     printf("\nPrioridade: %s", equipamento.prioridade);
@@ -189,7 +185,7 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
     printf("+------------------------------------------------------------------------------+\n");
     printf("|               Orbytec Sistemas Integrados - Setor VX27 - Dashboard           |\n");
     printf("+-------------------------+--------------------------+-------------------------+\n");
-    printf("|  OcorrÃªncias Recentes:  |    Operadores Ativos:    |   Equipamentos Ativos:  |\n");
+    printf("|  Ocorrências Recentes:  |    Operadores Ativos:    |   Equipamentos Ativos:  |\n");
     printf("|=========================|==========================|=========================|\n");
 
     int operadoresAtivos[MAXOPERADORES];
@@ -384,7 +380,7 @@ void printDashboard(Ocorrencias ocorrencias[], int nOcorrencias, Operadores oper
     printf("|                                                                              |\n");
     printf("|    1. Cadastro de Operadores.              4. Consultar Registros.           |\n");
     printf("|                                                                              |\n");
-    printf("|    2. Cadastro de Equipamentos.            5. Ver RelatÃ³rios Operacionais.   |\n");
+    printf("|    2. Cadastro de Equipamentos.            5. Ver Relatórios Operacionais.   |\n");
     printf("|                                                                              |\n");
     printf("|    3. Atualizar Dados do Sistema.          6. Sair do Programa.              |\n");
     printf("+------------------------------------------------------------------------------+\n");
@@ -399,7 +395,7 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
 
         system("cls || clear");
         printf("Cadastro de equipamento:\n\n");
-        printf("> ID do equipamento (1 Letra, 2 DÃ­gitos): ");
+        printf("> ID do equipamento (1 Letra, 2 Dígitos): ");
         readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
 
@@ -407,11 +403,11 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
             if (verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamentos)) {
                 strcpy(equipamento.ID, equipamentoTemp.ID);
             } else {
-                printf("\nID jÃ¡ cadastrado\n\n");
+                printf("\nID já cadastrado\n\n");
                 pause();
             }
         } else {
-            printf("\nID InvÃ¡lido\n\n");
+            printf("\nID Inválido\n\n");
             pause();
         }
     } while (!verificar(equipamentoTemp.ID, sizeof(equipamentoTemp.ID), 0) || !verificaIdUnicoEquipamento(equipamentoTemp.ID, equipamentos, nEquipamentos));
@@ -458,17 +454,17 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
     do {
 
         system("cls || clear");
-        printf("> Setor (2 Letras, 2 DÃ­gitos): ");
-        readString(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor));
+        printf("> Setor (2 Letras, 2 Dígitos): ");
+        readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
 
 
-        if (verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0)) {
-            strcpy(equipamento.setorAssociado.setor, equipamentoTemp.setorAssociado.setor);
+        if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0)) {
+            strcpy(equipamento.setorAssociado, equipamentoTemp.setorAssociado);
         } else {
-            printf("\nSetor InvÃ¡lido\n\n");
+            printf("\nSetor Inválido\n\n");
             pause();
         }
-    } while (!verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0));
+    } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
 
 
     do {
@@ -476,10 +472,10 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         input = 0;
 
         system("cls || clear");
-        printf("Qual Ã© o Estado Operacional atual do equipamento? \n\n\t");
+        printf("Qual é o Estado Operacional atual do equipamento? \n\n\t");
         printf("1: Ativo\n\t");
         printf("2: Inativo\n\t");
-        printf("3: ManutenÃ§Ã£o\n\n> ");
+        printf("3: Manutenção\n\n> ");
         readInt(&input);
 
 
@@ -504,14 +500,14 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
     do {
 
         system("cls || clear");
-        printf("> ID do Operador Associado (4 DÃ­gitos): ");
+        printf("> ID do Operador Associado (4 Dígitos): ");
         readString(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo));
 
 
         if (verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo), 1)) {
             strcpy(equipamento.IDo, equipamentoTemp.IDo);
         } else {
-            printf("\nID InvÃ¡lido\n\n");
+            printf("\nID Inválido\n\n");
             pause();
         }
     } while (!verificar(equipamentoTemp.IDo, sizeof(equipamentoTemp.IDo), 1));
@@ -522,7 +518,7 @@ Equipamentos registrarEquipamento(Equipamentos equipamentos[], int nEquipamentos
         input = 0;
 
         system("cls || clear");
-        printf("> NÃ­vel de Prioridade (1. BAIXA, 2. MEDIA, 3. ALTA): ");
+        printf("> Nível de Prioridade (1. BAIXA, 2. MEDIA, 3. ALTA): ");
         readInt(&input);
 
 
@@ -557,26 +553,26 @@ Ocorrencias registrarOcorrencia(Ocorrencias ocorrencias[], int nOcorrencias){
     do {
         system("cls || clear");
 
-        printf("> ID da Ocorrencia (4 DÃ­gitos, outros serÃ£o desconsiderados):  ");
+        printf("> ID da Ocorrencia (4 Dígitos, outros serão desconsiderados):  ");
         readString(ocorrencia.ID, sizeof(ocorrencia.ID));
 
         if (verificar(ocorrencia.ID, sizeof(ocorrencia.ID), 1)) {
             if (!verificaIdUnicoOcorrencia(ocorrencia.ID, ocorrencias, nOcorrencias)) {
-                printf("\nID jÃ¡ cadastrado!\n\n");
+                printf("\nID já cadastrado!\n\n");
                 pause();
             }
         } else {
-            printf("\nID InvÃ¡lido!\n\n");
+            printf("\nID Inválido!\n\n");
             pause();
         }
     } while ((!verificar(ocorrencia.ID, sizeof(ocorrencia.ID), 1)) || (!verificaIdUnicoOcorrencia(ocorrencia.ID, ocorrencias, nOcorrencias)));
 
     system("cls || clear");
-    printf("> Primeiro Nome do Emissor (MÃ¡ximo de 16 CaractÃ©res): ");
+    printf("> Primeiro Nome do Emissor (Máximo de 16 Caractéres): ");
     readString(ocorrencia.emissor, sizeof(ocorrencia.emissor));
 
     system("cls || clear");
-    printf("> DescriÃ§Ã£o da ocorrencia (MÃ¡ximo de 100 caractÃ©res): ");
+    printf("> Descrição da ocorrencia (Máximo de 100 caractéres): ");
     readString(ocorrencia.descricao, sizeof(ocorrencia.descricao));
 
     printf("\n\nOcorrencia cadastrada com sucesso!\n");
@@ -596,39 +592,39 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
     do {
         system("cls || clear");
 
-        printf("> ID do Operador (4 DÃ­gitos, outros serÃ£o desconsiderados):  ");
+        printf("> ID do Operador (4 Dígitos, outros serão desconsiderados):  ");
         readString(op.ID, sizeof(op.ID));
 
         if (verificar(op.ID, sizeof(op.ID), 1)) {
             if (!verificaIdUnicoOperador(op.ID, operadores, nOperadores)) {
-                printf("\nID jÃ¡ cadastrado!\n\n");
+                printf("\nID já cadastrado!\n\n");
                 pause();
             }
         } else {
-            printf("\nID InvÃ¡lido!\n\n");
+            printf("\nID Inválido!\n\n");
             pause();
         }
     } while ((!verificar(op.ID, sizeof(op.ID), 1)) || (!verificaIdUnicoOperador(op.ID, operadores, nOperadores)));
 
     system("cls || clear");
-    printf("> Nome do Operador (MÃ¡ximo de 70 CaractÃ©res): ");
+    printf("> Nome do Operador (Máximo de 70 Caractéres): ");
     readString(op.nome, sizeof(op.nome));
 
     do {
         system("cls || clear");
-        printf("> Setor (2 Letras, 2 DÃ­gitos - outros serÃ£o desconsiderados): ");
-        readString(op.setorAssociado.setor, sizeof(op.setorAssociado.setor));
+        printf("> Setor (2 Letras, 2 Dígitos - outros serão desconsiderados): ");
+        readString(op.setorAssociado, sizeof(op.setorAssociado));
 
-        if (!verificar(op.setorAssociado.setor, sizeof(op.setorAssociado.setor), 0)) {
-            printf("\nSetor InvÃ¡lido!\n\n");
+        if (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0)) {
+            printf("\nSetor Inválido!\n\n");
             pause();
         }
-    } while (!verificar(op.setorAssociado.setor, sizeof(op.setorAssociado.setor), 0));
+    } while (!verificar(op.setorAssociado, sizeof(op.setorAssociado), 0));
 
     do {
         localInput = 0;
         system("cls || clear");
-        printf("> NÃ­vel Operacional (1. BASICO, 2. INTERMEDIARIO, 3. SUPERVISOR): ");
+        printf("> Nível Operacional (1. BASICO, 2. INTERMEDIARIO, 3. SUPERVISOR): ");
         readInt(&localInput);
 
         switch (localInput){
@@ -642,7 +638,7 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
                 strcpy(op.nivelOp, "SUPERVISOR");
                 break;
             default:
-                printf("ERRO. VocÃª inseriu o nÃºmero do nÃ­vel que vocÃª quer? Tente novamente.\n");
+                printf("ERRO. Você inseriu o número do nível que você quer? Tente novamente.\n");
                 pause();
         }
 
@@ -669,7 +665,7 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
                 strcpy(op.estado, "BLOQUEADO");
                 break;
             default:
-                printf("ERRO. VocÃª inseriu o nÃºmero do estado que vocÃª quer? Tente novamente.\n");
+                printf("ERRO. Você inseriu o número do estado que você quer? Tente novamente.\n");
                 pause();
         }
     }while(localInput != 1 && localInput != 2 && localInput != 3 && localInput != 4);
@@ -677,7 +673,7 @@ Operadores registrarOperador(Operadores operadores[], int nOperadores){
     do {
         localInput = -1;
         system("cls || clear");
-        printf("> Quantidade de OperaÃ§Ãµes realizadas (sÃ³ nÃºmeros positÃ­vos): ");
+        printf("> Quantidade de Operações realizadas (só números positívos): ");
         readInt(&localInput);
         limpaBuffer();
 
@@ -714,7 +710,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                         equipamentoEscolhido = -1;
 
-                        printf("Escreva o ID do equipamento que vocÃª quer modificar: ");
+                        printf("Escreva o ID do equipamento que você quer modificar: ");
                         readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
                         for (i = 0; i < *nEquipamentos; i++) {
@@ -735,10 +731,10 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         input = 0;
 
                         system("cls || clear");
-                        printf("Qual Ã© o Novo Estado Operacional do equipamento? \n\n\t");
+                        printf("Qual é o Novo Estado Operacional do equipamento? \n\n\t");
                         printf("1: Ativo\n\t");
                         printf("2: Inativo\n\t");
-                        printf("3: ManutenÃ§Ã£o\n\n> ");
+                        printf("3: Manutenção\n\n> ");
                         readInt(&input);
 
 
@@ -759,7 +755,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         }
                     } while (input < 1 || input > 3);
                 } else {
-                    printf("\nNÃ£o existem equipamentos ainda\n\n");
+                    printf("\nNão existem equipamentos ainda\n\n");
                     pause();
                 }
                 break;
@@ -770,7 +766,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                         operadorEscolhido = -1;
 
-                        printf("Escreva o ID do operador que vocÃª quer modificar: ");
+                        printf("Escreva o ID do operador que você quer modificar: ");
                         readString(operadorTemp.ID, sizeof(operadorTemp.ID));
 
                         for (i = 0; i < *nOperadores; i++) {
@@ -791,7 +787,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         input = 0;
 
                         system("cls || clear");
-                        printf("Qual Ã© o novo status do operador? \n\n\t");
+                        printf("Qual é o novo status do operador? \n\n\t");
                         printf("1: Ativo\n\t");
                         printf("2: Ocupado\n\t");
                         printf("3: Inativo\n\t ");
@@ -819,7 +815,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                         }
                     } while (input < 1 || input > 4);
                 } else {
-                    printf("\nNÃ£o existem operadores ainda\n\n");
+                    printf("\nNão existem operadores ainda\n\n");
                     pause();
                 }
                 break;
@@ -830,7 +826,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                         equipamentoEscolhido = -1;
 
-                        printf("Escreva o ID do equipamento que vocÃª quer modificar: ");
+                        printf("Escreva o ID do equipamento que você quer modificar: ");
                         readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
                         for (i = 0; i < *nEquipamentos; i++) {
@@ -851,17 +847,17 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                         system("cls || clear");
                         printf("Escreva o novo Setor Associado ao equipamento: ");
-                        readString(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor));
+                        readString(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado));
 
-                        if (verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0)) {
-                            strcpy(equipamentos[equipamentoEscolhido].setorAssociado.setor, equipamentoTemp.setorAssociado.setor);
+                        if (verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0)) {
+                            strcpy(equipamentos[equipamentoEscolhido].setorAssociado, equipamentoTemp.setorAssociado);
                         } else {
-                            printf("\nSetor InvÃ¡lido\n\n");
+                            printf("\nSetor Inválido\n\n");
                             pause();
                         }
-                    } while (!verificar(equipamentoTemp.setorAssociado.setor, sizeof(equipamentoTemp.setorAssociado.setor), 0));
+                    } while (!verificar(equipamentoTemp.setorAssociado, sizeof(equipamentoTemp.setorAssociado), 0));
                 } else {
-                    printf("\nNÃ£o existem equipamentos ainda\n\n");
+                    printf("\nNão existem equipamentos ainda\n\n");
                     pause();
                 }
                 break;
@@ -882,7 +878,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                 ocorrencias[*nOcorrencias] = registrarOcorrencia(ocorrencias, *nOcorrencias);
                                 (*nOcorrencias)++;
                             } else {
-                                printf("ERRO: O nÃºmero mÃ¡ximo de ocorrencias (%2d) jÃ¡ foi registrado!", MAXEQUIPAMENTOS);
+                                printf("ERRO: O número máximo de ocorrencias (%2d) já foi registrado!", MAXEQUIPAMENTOS);
                                 pause();
                                 system("cls || clear");
                             }
@@ -893,7 +889,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                                 ocorrenciaEscolhida = -1;
 
-                                printf("Escreva o ID da ocorrencia que vocÃª quer tirar do registro: ");
+                                printf("Escreva o ID da ocorrencia que você quer tirar do registro: ");
                                 readString(ocorrenciaTemp.ID, sizeof(ocorrenciaTemp.ID));
 
                                 for (i = 0; i < *nOcorrencias; i++) {
@@ -920,7 +916,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                                 }
                             } else {
-                                printf("\nNÃ£o existem ocorrencias ainda\n\n");
+                                printf("\nNão existem ocorrencias ainda\n\n");
                                 pause();
                             }
                             break;
@@ -950,7 +946,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                                 operadorEscolhido = -1;
 
-                                printf("Escreva o ID do operador que vocÃª quer tirar do registro: ");
+                                printf("Escreva o ID do operador que você quer tirar do registro: ");
                                 readString(operadorTemp.ID, sizeof(operadorTemp.ID));
 
                                 for (i = 0; i < *nOperadores; i++) {
@@ -976,7 +972,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                     system("pause");
                                 }
                             } else {
-                                printf("\nNÃ£o existem operadores ainda\n\n");
+                                printf("\nNão existem operadores ainda\n\n");
                                 pause();
                             }
                             break;
@@ -986,7 +982,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
 
                                 equipamentoEscolhido = -1;
 
-                                printf("Escreva o ID do equipamento que vocÃª quer tirar do registro: ");
+                                printf("Escreva o ID do equipamento que você quer tirar do registro: ");
                                 readString(equipamentoTemp.ID, sizeof(equipamentoTemp.ID));
 
                                 for (i = 0; i < *nEquipamentos; i++) {
@@ -1012,7 +1008,7 @@ void atualizaDados(Equipamentos equipamentos[], int *nEquipamentos, Operadores o
                                     system("pause");
                                 }
                             } else {
-                                printf("\nNÃ£o existem equipamentos ainda\n\n");
+                                printf("\nNão existem equipamentos ainda\n\n");
                                 pause();
                             }
                             break;
@@ -1087,7 +1083,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                         printf("%-6s %-71s %-5s %-14s %-10s %-5d\n",
                                operadores[i].ID,
                                operadores[i].nome,
-                               operadores[i].setorAssociado.setor,
+                               operadores[i].setorAssociado,
                                operadores[i].nivelOp,
                                operadores[i].estado,
                                operadores[i].quantOp);
@@ -1118,7 +1114,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                         printf("+------------------------------------------+\n");
                         printf("  ID         : %s\n", operadores[i].ID);
                         printf("  Nome       : %s\n", operadores[i].nome);
-                        printf("  Setor      : %s\n", operadores[i].setorAssociado.setor);
+                        printf("  Setor      : %s\n", operadores[i].setorAssociado);
                         printf("  Nivel      : %s\n", operadores[i].nivelOp);
                         printf("  Estado     : %s\n", operadores[i].estado);
                         printf("  Operacoes  : %d\n", operadores[i].quantOp);
@@ -1150,7 +1146,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                         printf("+------------------------------------------+\n");
                         printf("  ID              : %s\n", equipamentos[i].ID);
                         printf("  Tipo            : %s\n", equipamentos[i].tipo);
-                        printf("  Setor           : %s\n", equipamentos[i].setorAssociado.setor);
+                        printf("  Setor           : %s\n", equipamentos[i].setorAssociado);
                         printf("  Estado          : %s\n", equipamentos[i].estado);
                         printf("  Operador Assoc. : %s\n", equipamentos[i].IDo);
                         printf("  Prioridade      : %s\n", equipamentos[i].prioridade);
@@ -1189,12 +1185,12 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
 
                             if (strcmp(equipamentos[i].prioridade, "ALTA") == 0) {
                                 strcpy(nivelNecessario, "SUPERVISOR");
-                                printf("\nEquipamento de prioridade ALTA â€” necessario nivel SUPERVISOR.\n");
+                                printf("\nEquipamento de prioridade ALTA — necessario nivel SUPERVISOR.\n");
                             } else if (strcmp(equipamentos[i].prioridade, "MEDIA") == 0) {
                                 strcpy(nivelNecessario, "INTERMEDIARIO");
-                                printf("\nEquipamento de prioridade MEDIA â€” necessario nivel INTERMEDIARIO ou SUPERVISOR.\n");
+                                printf("\nEquipamento de prioridade MEDIA — necessario nivel INTERMEDIARIO ou SUPERVISOR.\n");
                             } else {
-                                printf("\nEquipamento de prioridade BAIXA â€” qualquer nivel aceito.\n");
+                                printf("\nEquipamento de prioridade BAIXA — qualquer nivel aceito.\n");
                             }
                             break;
                         }
@@ -1206,7 +1202,7 @@ void consultarRegistros(Operadores operadores[], int nOperadores, Equipamentos e
                 printf("------------------------------------------------------------\n");
 
                 for (i = 0; i < nOperadores; i++) {
-                    strcpy(setorUpper, operadores[i].setorAssociado.setor);
+                    strcpy(setorUpper, operadores[i].setorAssociado);
                     for (j = 0; setorUpper[j]; j++) setorUpper[j] = toupper(setorUpper[j]);
 
 
@@ -1258,12 +1254,12 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
     int maior = -1;
 
     system("cls || clear");
-    printf("\nQual relatÃ³rio operacional vocÃª quer checar?");
-    printf("\n1 --> Todos os operadores");
-    printf("\n2 --> InformaÃ§Ãµes dos operadores de um setor especÃ­fico");
-    printf("\n3 --> InformaÃ§Ãµes dos equipamentos de um setor especÃ­fico");
-    printf("\n4 --> InformaÃ§Ãµes do setor");
-    printf("\n5 --> Operador de cada setor com maior nÃºmero de atividades realizadas\n> ");
+    printf("\nQual relatório operacional você quer checar?\n");
+    printf("\n1: Todos os operadores");
+    printf("\n2: Informações dos operadores de um setor específico");
+    printf("\n3: Informações dos equipamentos de um setor específico");
+    printf("\n4: Informações do setor");
+    printf("\n5: Operador de cada setor com maior número de atividades realizadas\n> ");
     readInt(&list);
 
     switch (list) {
@@ -1273,10 +1269,10 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
             for (i = 0; i < nOperadores; i++) {
                 printf("\nID: %s", operadores[i].ID);
                 printf("\nNome: %s", operadores[i].nome);
-                printf("\nSetor: %s", operadores[i].setorAssociado.setor);
-                printf("\nNÃ­vel Operacional: %s", operadores[i].nivelOp);
+                printf("\nSetor: %s", operadores[i].setorAssociado);
+                printf("\nNível Operacional: %s", operadores[i].nivelOp);
                 printf("\nStatus: %s", operadores[i].estado);
-                printf("\nQuantidade de operaÃ§Ãµes: %d\n", operadores[i].quantOp);
+                printf("\nQuantidade de operações: %d\n", operadores[i].quantOp);
             }
             pause();
             break;
@@ -1286,7 +1282,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
             printf("Digite o setor desejado: ");
             readString(setorDet, sizeof(setorDet));
             for (i = 0; i < nOperadores; i++) {
-                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
+                if (strcmp(operadores[i].setorAssociado, setorDet) == 0) {
                     printf("\nID: %s", operadores[i].ID);
                     printf("\nNome: %s", operadores[i].nome);
                     printf("\nStatus: %s\n", operadores[i].estado);
@@ -1301,7 +1297,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
             readString(setorDet, sizeof(setorDet));
             limpaBuffer();
             for (h = 0; h < nEquipamentos; h++) {
-                if (strcmp(equipamentos[h].setorAssociado.setor, setorDet) == 0) {
+                if (strcmp(equipamentos[h].setorAssociado, setorDet) == 0) {
                     printf("\nID: %s", equipamentos[h].ID);
                     printf("\nTipo: %s", equipamentos[h].tipo);
                     printf("\nEstado Operacional: %s\n", equipamentos[h].estado);
@@ -1316,7 +1312,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
             readString(setorDet, sizeof(setorDet));
             limpaBuffer();
             for (i = 0; i < nOperadores; i++) {
-                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0) {
+                if (strcmp(operadores[i].setorAssociado, setorDet) == 0) {
                     printf("\nID: %s", operadores[i].ID);
                     printf("\nNome: %s\n", operadores[i].nome);
                 }
@@ -1332,7 +1328,7 @@ void relatoriosOp(Operadores operadores[], int nOperadores, Equipamentos equipam
             melhorIndice = -1;
             maior = -1;
             for (i = 0; i < nOperadores; i++) {
-                if (strcmp(operadores[i].setorAssociado.setor, setorDet) == 0 && operadores[i].quantOp > maior) {
+                if (strcmp(operadores[i].setorAssociado, setorDet) == 0 && operadores[i].quantOp > maior) {
                     maior = operadores[i].quantOp;
                     melhorIndice = i;
                 }
@@ -1396,7 +1392,7 @@ int main() {
                     operadores[nOperadores] = registrarOperador(operadores, nOperadores);
                     nOperadores++;
                 } else {
-                    printf("ERRO: O nÃºmero mÃ¡ximo de operadores (%2d) jÃ¡ foi registrado!", MAXOPERADORES);
+                    printf("ERRO: O número máximo de operadores (%2d) já foi registrado!", MAXOPERADORES);
                     pause();
                     system("cls || clear");
                 }
@@ -1408,7 +1404,7 @@ int main() {
                     equipamentos[nEquipamentos] = registrarEquipamento(equipamentos, nEquipamentos);
                     nEquipamentos++;
                 } else {
-                    printf("ERRO: O nÃºmero mÃ¡ximo de equipamentos (%3d) jÃ¡ foi registrado!",MAXEQUIPAMENTOS);
+                    printf("ERRO: O número máximo de equipamentos (%3d) já foi registrado!",MAXEQUIPAMENTOS);
                     pause();
                     system("cls || clear");
                 }
@@ -1431,7 +1427,7 @@ int main() {
                 break;
 
             default:
-                printf("Comando invÃ¡lido!");
+                printf("Comando inválido!");
                 pause();
                 system("cls || clear");
             }
